@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/big_text.dart';
+import 'dimentions.dart';
 
 class LineChartWidget extends StatefulWidget {
   const LineChartWidget({super.key});
@@ -16,77 +17,95 @@ class LineChartWidget extends StatefulWidget {
 
 class _LineChartWidgetState extends State<LineChartWidget> {
   List<FlSpot> salesSpots() => [
-        FlSpot(0, 80000),
-        FlSpot(1, 20000),
-        FlSpot(2, 30000),
-        FlSpot(3, 15000),
-        FlSpot(4, 25000),
-        FlSpot(5, 40000),
+        FlSpot(0, 20000),
+        FlSpot(1, 30000),
+        FlSpot(2, 15000),
+        FlSpot(3, 25000),
+        FlSpot(4, 40000),
+        FlSpot(5, 80000),
         FlSpot(6, 80000),
-        FlSpot(7, 80000),
       ];
 
   List<FlSpot> expenseSpots() => [
-        FlSpot(0, 70000),
-        FlSpot(1, 50000),
-        FlSpot(2, 60000),
-        FlSpot(3, 95000),
-        FlSpot(4, 25000),
-        FlSpot(5, 10000),
-        FlSpot(6, 30000),
-        FlSpot(7, 70000),
+        FlSpot(0, 50000),
+        FlSpot(1, 60000),
+        FlSpot(2, 95000),
+        FlSpot(3, 25000),
+        FlSpot(4, 10000),
+        FlSpot(5, 30000),
+        FlSpot(6, 70000),
       ];
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        padding: EdgeInsets.only(top: 50),
+        padding: EdgeInsets.only(top: Dimentions.height10 * 5),
         //color: Colors.red,
         child: Column(
           children: [
             Container(
               //color: Colors.blue,
-              height: 250,
+              height: Dimentions.pageView220,
               width: double.infinity,
-              child: AspectRatio(
-                aspectRatio: 2.0,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: LineChart(
-                    LineChartData(
-                        minY: 0,
-                        maxY: 100000,
-                        lineBarsData: [
-                          LineChartBarData(
-                              spots: salesSpots(),
-                              color: Colors.green,
-                              barWidth: 5,
-                              isCurved: true),
-                          LineChartBarData(
-                              spots: expenseSpots(),
-                              color: Colors.red,
-                              barWidth: 5,
-                              isCurved: true)
-                        ],
-                        clipData: FlClipData.all(),
-                        borderData: FlBorderData(show: false),
-                        titlesData: FlTitlesData(
-                            topTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
+              child: Padding(
+                padding: EdgeInsets.all(Dimentions.height20),
+                child: LineChart(
+                  LineChartData(
+                      minY: 0,
+                      maxY: 100000,
+                      lineBarsData: [
+                        LineChartBarData(
+                            spots: salesSpots(),
+                            color: Colors.green,
+                            barWidth: Dimentions.width5,
+                            isCurved: true),
+                        LineChartBarData(
+                            spots: expenseSpots(),
+                            color: Colors.red,
+                            barWidth: Dimentions.width5,
+                            isCurved: true)
+                      ],
+                      clipData: FlClipData.all(),
+                      borderData: FlBorderData(show: false),
+                      titlesData: FlTitlesData(
+                          topTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          rightTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: false,
+                              getTitlesWidget: (value, meta) {
+                                return Text(value.toInt().toString());
+                              },
                             ),
-                            rightTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            leftTitles: AxisTitles(
+                          ),
+                          bottomTitles: AxisTitles(
                               sideTitles: SideTitles(
-                                showTitles: false,
-                                getTitlesWidget: (value, meta) {
-                                  return Text(value.toInt().toString());
-                                },
-                              ),
-                            ))),
-                  ),
+                            showTitles: true,
+                            getTitlesWidget: (value, meta) {
+                              switch (value) {
+                                case 0:
+                                  return BigText(text: 'M');
+                                case 1:
+                                  return BigText(text: 'T');
+                                case 2:
+                                  return BigText(text: 'W');
+                                case 3:
+                                  return BigText(text: 'T');
+                                case 4:
+                                  return BigText(text: 'F');
+                                case 5:
+                                  return BigText(text: 'S');
+                                case 6:
+                                  return BigText(text: 'S');
+                              }
+                              return BigText(text: '');
+                            },
+                          )))),
                 ),
               ),
             ),

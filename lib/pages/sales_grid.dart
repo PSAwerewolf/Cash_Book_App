@@ -2,6 +2,8 @@ import 'package:cash_book_app4/widgets/big_text.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../utils/dimentions.dart';
+
 class SalesGrid extends StatefulWidget {
   const SalesGrid({super.key});
 
@@ -79,6 +81,15 @@ class _SalesGridState extends State<SalesGrid> {
       Sales(id: 4, category: "Vegetable", amount: 200.00),
       Sales(id: 5, category: "Drinks", amount: 200.00),
       Sales(id: 6, category: "Stationary", amount: 200.00),
+      Sales(id: 4, category: "Vegetable", amount: 200.00),
+      Sales(id: 5, category: "Drinks", amount: 200.00),
+      Sales(id: 6, category: "Stationary", amount: 200.00),
+      Sales(id: 4, category: "Vegetable", amount: 200.00),
+      Sales(id: 5, category: "Drinks", amount: 200.00),
+      Sales(id: 6, category: "Stationary", amount: 200.00),
+      Sales(id: 4, category: "Vegetable", amount: 200.00),
+      Sales(id: 5, category: "Drinks", amount: 200.00),
+      Sales(id: 6, category: "Stationary", amount: 200.00),
     ];
   }
 }
@@ -105,7 +116,7 @@ class SalesDataSource extends DataGridSource {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((dataGridCell) {
       return Container(
-        padding: EdgeInsets.only(left: 20),
+        padding: EdgeInsets.only(left: Dimentions.height20),
         alignment: Alignment.centerLeft,
         child: Text(dataGridCell.value.toString()),
       );

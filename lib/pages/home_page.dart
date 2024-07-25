@@ -1,7 +1,9 @@
 import 'package:cash_book_app4/pages/dashboard_page.dart';
 import 'package:cash_book_app4/pages/sales_grid.dart';
 import 'package:cash_book_app4/pages/sales_page.dart';
+import 'package:cash_book_app4/pages/settings_page.dart';
 import 'package:cash_book_app4/splash_page.dart';
+import 'package:cash_book_app4/utils/dimentions.dart';
 import 'package:cash_book_app4/utils/line_chart_widget.dart';
 import 'package:cash_book_app4/widgets/big_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   late PersistentTabController _controller;
 
   List<Widget> _buildScreens() {
-    return [SalesPage(), DashboardPage(), SplashPage()];
+    return [SalesPage(), DashboardPage(), SettingsPage()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -37,7 +39,7 @@ class _HomePageState extends State<HomePage> {
         title: ("Dash Board"),
         activeColorPrimary: AppColors.mainColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
-        iconSize: 40,
+        iconSize: Dimentions.iconSize16 * 2,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.settings),
@@ -59,7 +61,7 @@ class _HomePageState extends State<HomePage> {
     return PersistentTabView(
       context,
       controller: _controller,
-      navBarHeight: 90,
+      navBarHeight: Dimentions.height45 * 2,
       screens: _buildScreens(),
       items: _navBarsItems(),
       confineInSafeArea: true,
@@ -71,7 +73,7 @@ class _HomePageState extends State<HomePage> {
       hideNavigationBarWhenKeyboardShows:
           true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
       decoration: NavBarDecoration(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(Dimentions.radius15),
         colorBehindNavBar: Colors.white,
       ),
       popAllScreensOnTapOfSelectedTab: true,
