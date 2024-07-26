@@ -9,14 +9,14 @@ import '../utils/appcolors.dart';
 import '../utils/dimentions.dart';
 import '../utils/dropdownmenu_widget.dart';
 
-class AddSales extends StatefulWidget {
-  const AddSales({super.key});
+class AddExpense extends StatefulWidget {
+  const AddExpense({super.key});
 
   @override
-  State<AddSales> createState() => _AddSalesState();
+  State<AddExpense> createState() => _AddExpenseState();
 }
 
-class _AddSalesState extends State<AddSales> {
+class _AddExpenseState extends State<AddExpense> {
   TextEditingController _priceController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -25,15 +25,11 @@ class _AddSalesState extends State<AddSales> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          BigText(text: "Enter Your Sales Here"),
+          BigText(text: "Enter Your Expense Here"),
           SizedBox(
             height: Dimentions.height15,
           ),
           DropdownMenuWidget(),
-          SizedBox(
-            height: Dimentions.height15,
-          ),
-          BigText(text: "Default Price : \$ 1000.00"),
           SizedBox(
             height: Dimentions.height15,
           ),
@@ -46,7 +42,7 @@ class _AddSalesState extends State<AddSales> {
                     backgroundColor: Colors.transparent,
                     iconSize: Dimentions.iconSize24,
                   ),
-                  placeHolder: 'Add product value',
+                  placeHolder: 'Add Expense Value',
                   controller: _priceController),
             ),
           ),

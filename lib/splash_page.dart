@@ -19,7 +19,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     Timer(const Duration(seconds: 3),
-        () => Get.toNamed(RoutesHelper.getHomePage()));
+        () => Get.toNamed(RoutesHelper.getLoginPage()));
     super.initState();
   }
 

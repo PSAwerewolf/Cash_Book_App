@@ -283,89 +283,28 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   );
                 },
-                child: Row(
-                  children: [
-                    AppIcon(
-                        iconData: Icons.file_copy,
-                        iconColor: AppColors.mainColor,
-                        backgroundColor: Colors.white),
-                    SizedBox(
-                      width: Dimentions.width10,
-                    ),
-                    BigText(text: "Report - Sales")
-                  ],
+                child: GestureDetector(
+                  onTap: () {
+                    Get.toNamed(RoutesHelper.salesReport);
+                  },
+                  child: Row(
+                    children: [
+                      AppIcon(
+                          iconData: Icons.file_copy,
+                          iconColor: AppColors.mainColor,
+                          backgroundColor: Colors.white),
+                      SizedBox(
+                        width: Dimentions.width10,
+                      ),
+                      BigText(text: "Report - Sales")
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: Dimentions.height10),
               GestureDetector(
                 onTap: () {
-                  TextEditingController categoryController =
-                      TextEditingController();
-
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      actions: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            MaterialButton(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        Dimentions.radius15)),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: Dimentions.height10,
-                                    horizontal: Dimentions.width10),
-                                color: AppColors.paraColor,
-                                elevation: 0.1,
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: BigText(
-                                  text: "Cancel",
-                                  color: Colors.white,
-                                )),
-                            MaterialButton(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        Dimentions.radius15)),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: Dimentions.height10,
-                                    horizontal: Dimentions.width10),
-                                color: AppColors.mainColor,
-                                elevation: 0.1,
-                                onPressed: () {},
-                                child: BigText(
-                                  text: "Add",
-                                  color: Colors.white,
-                                )),
-                          ],
-                        ),
-                      ],
-                      title: Center(
-                        child: BigText(
-                          text: "Report - Expenses",
-                        ),
-                      ),
-                      content: Material(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            TextFieldWidget(
-                                preIcon: AppIcon(
-                                  iconData: Icons.add,
-                                  backgroundColor: Colors.transparent,
-                                ),
-                                placeHolder: "Report - Expenses",
-                                controller: categoryController),
-                            SizedBox(
-                              height: Dimentions.height10,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
+                  Get.toNamed(RoutesHelper.getSalesReport());
                 },
                 child: Row(
                   children: [
@@ -586,6 +525,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 elevation: 0.1,
                                 onPressed: () {
                                   Navigator.pop(context);
+                                  Get.toNamed(RoutesHelper.getLoginPage());
                                 },
                                 child: BigText(
                                   text: "Yes",

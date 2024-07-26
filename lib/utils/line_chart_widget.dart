@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cash_book_app4/utils/appcolors.dart';
 import 'package:cash_book_app4/widgets/small_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,7 +46,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
         child: Column(
           children: [
             Container(
-              //color: Colors.blue,
+              color: Colors.blueGrey[200]?.withOpacity(0.2),
               height: Dimentions.pageView220,
               width: double.infinity,
               child: Padding(

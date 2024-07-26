@@ -1,3 +1,5 @@
+import 'package:cash_book_app4/pages/add_expense.dart';
+import 'package:cash_book_app4/pages/add_sales.dart';
 import 'package:cash_book_app4/utils/appcolors.dart';
 import 'package:cash_book_app4/utils/dropdownmenu_widget.dart';
 import 'package:cash_book_app4/utils/line_chart_widget.dart';
@@ -163,34 +165,52 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Container(
-                      width: Dimentions.width10 * 15,
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(
-                          vertical: Dimentions.height15,
-                          horizontal: Dimentions.height20),
-                      decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius:
-                              BorderRadius.circular(Dimentions.radius15)),
-                      child: BigText(
-                        text: "Sales",
-                        color: Colors.white,
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  content: AddSales(),
+                                ));
+                      },
+                      child: Container(
+                        width: Dimentions.width10 * 15,
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.symmetric(
+                            vertical: Dimentions.height15,
+                            horizontal: Dimentions.height20),
+                        decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius:
+                                BorderRadius.circular(Dimentions.radius15)),
+                        child: BigText(
+                          text: "Sales",
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    Container(
-                      width: Dimentions.width10 * 15,
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(
-                          vertical: Dimentions.height15,
-                          horizontal: Dimentions.height20),
-                      decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius:
-                              BorderRadius.circular(Dimentions.radius15)),
-                      child: BigText(
-                        text: "Expense",
-                        color: Colors.white,
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  content: AddExpense(),
+                                ));
+                      },
+                      child: Container(
+                        width: Dimentions.width10 * 15,
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.symmetric(
+                            vertical: Dimentions.height15,
+                            horizontal: Dimentions.height20),
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius:
+                                BorderRadius.circular(Dimentions.radius15)),
+                        child: BigText(
+                          text: "Expense",
+                          color: Colors.white,
+                        ),
                       ),
                     )
                   ],
