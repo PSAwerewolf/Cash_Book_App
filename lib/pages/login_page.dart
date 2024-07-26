@@ -35,20 +35,20 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  Future<String> _login(String emailPHP, String passwordPHP) async {
+  Future<String> _login(
+      String shopIdPHP, String emailPHP, String passwordPHP) async {
     //var url = Uri.parse("http://192.168.8.153/Flutter_demoApp/login.php");
-    //var url = Uri.parse("http://$ipAddress/CafeDelightMobileApp/login.php");
+    var url = Uri.parse("http://172.20.10.4/CashBookApp/login.php");
 
-    /*final response = await http.post(url,
-        body: {'user_email': emailPHP, 'user_password': passwordPHP});
+    final response = await http.post(url, body: {
+      'shop_id': shopIdPHP,
+      'user_id': emailPHP,
+      'user_password': passwordPHP
+    });
     var dataReceived = await json.decode(response.body);
-    print(dataReceived['account']);
-    print(dataReceived['status']);
-    if (dataReceived['account'] == "Admin") {}
-    if (dataReceived['account'] == "User") {
-      Get.toNamed(RoutesHelper.popularFood);
-    }
-    String loginState = dataReceived['status'];*/
+    print(dataReceived);
+
+    Get.toNamed(RoutesHelper.getHomePage());
 
     return "loginState";
   }
@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                     iconColor: AppColors.mainColor,
                   ),
                   placeHolder: 'Enter User Id',
-                  controller: _shopIdController),
+                  controller: _userIdController),
               PasswordTextField(
                 controller: _passwordIdController,
                 placeHolder: 'Enter Password',
@@ -123,7 +123,8 @@ class _LoginPageState extends State<LoginPage> {
                   var userPassword = _passwordIdController.text;
 
                   if (!(userId.isEmpty && userPassword.isEmpty)) {
-                    String loginStatus = await _login(userId, userPassword);
+                    String loginStatus =
+                        await _login(shopId, userId, userPassword);
 
                     if (loginStatus != 'Success') {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
