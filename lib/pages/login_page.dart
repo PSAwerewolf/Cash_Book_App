@@ -24,6 +24,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  var ipAddress = '192.168.8.153';
+
   TextEditingController _shopIdController = TextEditingController();
   TextEditingController _userIdController = TextEditingController();
   TextEditingController _passwordIdController = TextEditingController();
@@ -35,10 +37,17 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  Future<String> _login(
+  @override
+  void dispose() {
+    _shopIdController.dispose();
+    _userIdController.dispose();
+    _passwordIdController.dispose();
+    super.dispose();
+  }
+
+  Future<Map> _login(
       String shopIdPHP, String emailPHP, String passwordPHP) async {
-    //var url = Uri.parse("http://192.168.8.153/Flutter_demoApp/login.php");
-    var url = Uri.parse("http://172.20.10.4/CashBookApp/login.php");
+    var url = Uri.parse("http://${ipAddress}/CashBookApp/login.php");
 
     final response = await http.post(url, body: {
       'shop_id': shopIdPHP,
@@ -48,9 +57,7 @@ class _LoginPageState extends State<LoginPage> {
     var dataReceived = await json.decode(response.body);
     print(dataReceived);
 
-    Get.toNamed(RoutesHelper.getHomePage());
-
-    return "loginState";
+    return dataReceived;
   }
 
   @override
@@ -123,13 +130,26 @@ class _LoginPageState extends State<LoginPage> {
                   var userPassword = _passwordIdController.text;
 
                   if (!(userId.isEmpty && userPassword.isEmpty)) {
-                    String loginStatus =
+                    var loginStatus =
                         await _login(shopId, userId, userPassword);
 
-                    if (loginStatus != 'Success') {
+                    if (loginStatus['status'] != 'Login Successful') {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text(
                           'Login UnSuccessful',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                              fontFamily: 'Roboto'),
+                        ),
+                        backgroundColor: Color(0xFFe07e22),
+                      ));
+                    } else {
+                      Get.toNamed(RoutesHelper.getHomePage());
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                          '${loginStatus['status']}',
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,

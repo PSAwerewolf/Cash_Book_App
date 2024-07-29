@@ -150,30 +150,8 @@ class _AddExpenseState extends State<AddExpense> {
               SizedBox(
                 height: Dimentions.height10 * 2,
               ),
-              SizedBox(
-                height: Dimentions.height10 * 5,
-                width: double.infinity,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(Dimentions.radius15)),
-                        backgroundColor: AppColors.yellowColor,
-                        foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(
-                          vertical: Dimentions.height10,
-                        )),
-                    onPressed: () {},
-                    child: BigText(
-                      text: "Add",
-                      color: Colors.white,
-                    )),
-              ),
-              SizedBox(
-                height: Dimentions.height10,
-              ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
                     height: Dimentions.height10 * 5,
@@ -183,18 +161,19 @@ class _AddExpenseState extends State<AddExpense> {
                             shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.circular(Dimentions.radius15)),
-                            backgroundColor: AppColors.paraColor,
+                            backgroundColor: Colors.greenAccent,
                             foregroundColor: Colors.white,
                             padding: EdgeInsets.symmetric(
                               vertical: Dimentions.height10,
                             )),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                        onPressed: () {},
                         child: BigText(
-                          text: "Cancel",
+                          text: "Add",
                           color: Colors.white,
                         )),
+                  ),
+                  SizedBox(
+                    height: Dimentions.height10,
                   ),
                   SizedBox(
                     height: Dimentions.height10 * 5,
@@ -204,7 +183,7 @@ class _AddExpenseState extends State<AddExpense> {
                             shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.circular(Dimentions.radius15)),
-                            backgroundColor: AppColors.paraColor,
+                            backgroundColor: Colors.green[700],
                             foregroundColor: Colors.white,
                             padding: EdgeInsets.symmetric(
                               vertical: Dimentions.height10,
@@ -216,6 +195,30 @@ class _AddExpenseState extends State<AddExpense> {
                         )),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: Dimentions.height10,
+              ),
+              SizedBox(
+                height: Dimentions.height10 * 5,
+                width: Dimentions.width30 * 3,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(Dimentions.radius15)),
+                        backgroundColor: Colors.redAccent,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(
+                          vertical: Dimentions.height10,
+                        )),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: BigText(
+                      text: "X",
+                      color: Colors.white,
+                    )),
               )
             ],
           ),

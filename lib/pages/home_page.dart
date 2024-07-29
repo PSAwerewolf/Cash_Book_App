@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    _controller = PersistentTabController(initialIndex: 0);
+    _controller = PersistentTabController(initialIndex: 1);
     super.initState();
   }
 
@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> {
     return PersistentTabView(
       context,
       controller: _controller,
-      navBarHeight: Dimentions.height45 * 2,
+      navBarHeight: Dimentions.height30 * 2.5,
       screens: _buildScreens(),
       items: _navBarsItems(),
       confineInSafeArea: true,

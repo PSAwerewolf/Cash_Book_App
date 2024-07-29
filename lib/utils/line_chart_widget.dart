@@ -41,7 +41,6 @@ class _LineChartWidgetState extends State<LineChartWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        padding: EdgeInsets.only(top: Dimentions.height10 * 5),
         //color: Colors.red,
         child: Column(
           children: [

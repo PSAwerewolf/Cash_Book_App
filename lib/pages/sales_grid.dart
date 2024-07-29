@@ -1,3 +1,5 @@
+import 'package:cash_book_app4/model/product_sales.dart';
+import 'package:cash_book_app4/model/sales_model.dart';
 import 'package:cash_book_app4/widgets/big_text.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -7,6 +9,7 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
 import 'dart:io';
+import 'package:provider/provider.dart';
 
 // Local import
 import '../utils/app_icon.dart';
@@ -23,7 +26,7 @@ class SalesGrid extends StatefulWidget {
 }
 
 class _SalesGridState extends State<SalesGrid> {
-  late List<Sales> _sales = [];
+  late List<ProductSales> _sales = [];
   late SalesDataSource _salesDataSource;
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
@@ -61,13 +64,16 @@ class _SalesGridState extends State<SalesGrid> {
 
   @override
   void initState() {
-    _sales = getSalesData();
     _salesDataSource = SalesDataSource(_sales);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    context.read<SalesModel>().fetchProductSales();
+    final productSalesList = context.watch<SalesModel>().salesList;
+    _sales = productSalesList;
+    _salesDataSource = SalesDataSource(_sales);
     return Container(
       child: Column(
         children: [
@@ -76,36 +82,37 @@ class _SalesGridState extends State<SalesGrid> {
             child: SfDataGrid(
               key: _key,
               allowFiltering: true,
-              allowSorting: true,
+              allowSorting: false,
               isScrollbarAlwaysShown: true,
               shrinkWrapRows: true,
-              columnWidthMode: ColumnWidthMode.lastColumnFill,
+              columnWidthMode: ColumnWidthMode.fill,
               source: _salesDataSource,
+              shrinkWrapColumns: false,
               columns: [
                 GridColumn(
-                    columnName: "id",
+                    columnName: "added_date",
                     label: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
                         child: BigText(
-                          text: "Time",
+                          text: "Date",
                           size: 12,
                         ),
                       ),
                     )),
                 GridColumn(
-                    columnName: "category",
+                    columnName: "product_name",
                     label: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
                         child: BigText(
-                          text: "Category",
+                          text: "Product Name",
                           size: 12,
                         ),
                       ),
                     )),
                 GridColumn(
-                    columnName: "amount",
+                    columnName: "total_amount",
                     label: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -192,37 +199,20 @@ class _SalesGridState extends State<SalesGrid> {
       ),
     );
   }
-
-  List<Sales> getSalesData() {
-    return [
-      Sales(id: 1, category: "Water", amount: 200.00),
-      Sales(id: 2, category: "Grocery", amount: 200.00),
-      Sales(id: 3, category: "Sales", amount: 200.00),
-      Sales(id: 4, category: "Vegetable", amount: 200.00),
-      Sales(id: 5, category: "Drinks", amount: 200.00),
-      Sales(id: 6, category: "Stationary", amount: 200.00),
-      Sales(id: 4, category: "Vegetable", amount: 200.00),
-      Sales(id: 5, category: "Drinks", amount: 200.00),
-      Sales(id: 6, category: "Stationary", amount: 200.00),
-      Sales(id: 4, category: "Vegetable", amount: 200.00),
-      Sales(id: 5, category: "Drinks", amount: 200.00),
-      Sales(id: 6, category: "Stationary", amount: 200.00),
-      Sales(id: 4, category: "Vegetable", amount: 200.00),
-      Sales(id: 5, category: "Drinks", amount: 200.00),
-      Sales(id: 6, category: "Stationary", amount: 200.00),
-    ];
-  }
 }
 
 class SalesDataSource extends DataGridSource {
-  SalesDataSource(List<Sales> sales) {
+  SalesDataSource(List<ProductSales> sales) {
     dataGridRows = sales
         .map<DataGridRow>((dataGridRow) => DataGridRow(cells: [
-              DataGridCell<int>(columnName: "id", value: dataGridRow.id),
               DataGridCell<String>(
-                  columnName: "category", value: dataGridRow.category),
+                  columnName: "added_date",
+                  value:
+                      '${dataGridRow.addedDate.day.toString()} - ${dataGridRow.addedDate.month.toString()} - ${dataGridRow.addedDate.year.toString()}'),
+              DataGridCell<String>(
+                  columnName: "product_name", value: dataGridRow.productName),
               DataGridCell<double>(
-                  columnName: "amount", value: dataGridRow.amount),
+                  columnName: "total_amount", value: dataGridRow.totalAmount),
             ]))
         .toList();
   }
@@ -242,12 +232,4 @@ class SalesDataSource extends DataGridSource {
       );
     }).toList());
   }
-}
-
-class Sales {
-  final int id;
-  final String category;
-  final double amount;
-
-  Sales({required this.id, required this.category, required this.amount});
 }

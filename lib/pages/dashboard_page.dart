@@ -19,11 +19,12 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   DateTime selectedDate = DateTime.now();
+  DateTime chartDate = DateTime.now();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
           padding: EdgeInsets.only(
               top: Dimentions.height15,
               left: Dimentions.height10,
@@ -73,13 +74,25 @@ class _DashboardPageState extends State<DashboardPage> {
                       size: Dimentions.height45,
                       backgroundColor: Colors.transparent,
                       iconSize: Dimentions.iconSize24,
+                      iconColor: AppColors.mainColor,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey[300],
+                      // Text color
+                      shadowColor: Colors.black, // Shadow color
+                      elevation: 5, // Elevation
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(Dimentions.radius15),
+                      ),
+                      padding: EdgeInsets.all(Dimentions.height10),
                     ),
                   ),
                 ],
               )),
               //SizedBox(height: Dimentions.height15),
               Container(
-                height: Dimentions.pageView120 / 2,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -153,14 +166,78 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                       ],
                     ),
+                    SizedBox(
+                      height: Dimentions.height10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.grey[300],
+                              // Text color
+                              shadowColor: Colors.black, // Shadow color
+                              elevation: 5, // Elevation
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(Dimentions.radius15),
+                              ),
+                              padding: EdgeInsets.all(Dimentions.height10),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                chartDate =
+                                    chartDate.subtract(Duration(days: 1));
+                              });
+                            },
+                            child: AppIcon(
+                              iconData: Icons.arrow_back_ios,
+                              backgroundColor: Colors.transparent,
+                              iconColor: AppColors.mainColor,
+                            )),
+                        Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.all(Dimentions.width5),
+                            width: Dimentions.width30 * 5,
+                            child: BigText(
+                              text:
+                                  "${chartDate.day} - ${chartDate.month} - ${chartDate.year}",
+                            )),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.grey[300], // Text color
+                              shadowColor: Colors.black, // Shadow color
+                              elevation: 5, // Elevation
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(Dimentions.radius15),
+                              ),
+                              padding: EdgeInsets.all(Dimentions.height10),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                chartDate = chartDate.add(Duration(days: 1));
+                              });
+                            },
+                            child: AppIcon(
+                              iconData: Icons.arrow_forward_ios,
+                              backgroundColor: Colors.transparent,
+                              iconColor: AppColors.mainColor,
+                            ))
+                      ],
+                    ),
                     Container(
-                      width: double.infinity,
+                      alignment: Alignment.center,
                       //color: Colors.red,
+                      padding: EdgeInsets.all(Dimentions.width10),
                       child: LineChartWidget(),
                     ),
                   ],
                 ),
               ),
+
               Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
