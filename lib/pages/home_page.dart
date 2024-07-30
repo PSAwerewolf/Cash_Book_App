@@ -1,11 +1,7 @@
 import 'package:cash_book_app4/pages/dashboard_page.dart';
-import 'package:cash_book_app4/pages/sales_grid.dart';
 import 'package:cash_book_app4/pages/sales_page.dart';
 import 'package:cash_book_app4/pages/settings_page.dart';
-import 'package:cash_book_app4/splash_page.dart';
 import 'package:cash_book_app4/utils/dimentions.dart';
-import 'package:cash_book_app4/utils/line_chart_widget.dart';
-import 'package:cash_book_app4/widgets/big_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';

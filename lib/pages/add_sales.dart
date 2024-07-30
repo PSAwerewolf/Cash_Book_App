@@ -46,7 +46,7 @@ class _AddSalesState extends State<AddSales> {
             ),
             BigText(
                 text:
-                    "Default Price : \$ ${dropDownKey.currentState?.getSelectedValue() == null ? '0000' : dropDownKey.currentState?.getSelectedValue()}"),
+                    "Default Price : \$ ${dropDownKey.currentState?.getSelectedValue() == 0 ? 00.00 : dropDownKey.currentState?.getSelectedValue()}"),
             SizedBox(
               height: Dimentions.height15,
             ),

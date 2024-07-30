@@ -6,10 +6,8 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_datagrid_export/export.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
-import 'package:path_provider/path_provider.dart';
-import 'package:open_file/open_file.dart';
-import 'dart:io';
 import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Local import
 import '../utils/app_icon.dart';
@@ -18,14 +16,14 @@ import 'helper/save_file_mobile.dart'
 
 import '../utils/dimentions.dart';
 
-class SalesGrid extends StatefulWidget {
-  const SalesGrid({super.key});
+class SalesListGrid extends StatefulWidget {
+  const SalesListGrid({super.key});
 
   @override
-  State<SalesGrid> createState() => _SalesGridState();
+  State<SalesListGrid> createState() => _SalesListGridState();
 }
 
-class _SalesGridState extends State<SalesGrid> {
+class _SalesListGridState extends State<SalesListGrid> {
   late List<ProductSales> _sales = [];
   late SalesDataSource _salesDataSource;
 
@@ -71,6 +69,8 @@ class _SalesGridState extends State<SalesGrid> {
   @override
   Widget build(BuildContext context) {
     context.read<SalesModel>().fetchProductSales();
+    double totalAmount = context.read<SalesModel>().getTotalAmount;
+    context.read<SalesModel>().getTotal();
     final productSalesList = context.watch<SalesModel>().salesList;
     _sales = productSalesList;
     _salesDataSource = SalesDataSource(_sales);
@@ -139,7 +139,7 @@ class _SalesGridState extends State<SalesGrid> {
                     text: "Total Amount : ",
                   ),
                   BigText(
-                    text: "Rs. 150000.00",
+                    text: "Rs. ${totalAmount}",
                   ),
                 ]),
             decoration: BoxDecoration(
@@ -165,7 +165,7 @@ class _SalesGridState extends State<SalesGrid> {
                                 BorderRadius.circular(Dimentions.radius15))),
                     onPressed: _exportDataGridToPdf,
                     child: AppIcon(
-                      iconData: Icons.adobe,
+                      iconData: Icons.feed,
                       backgroundColor: Colors.transparent,
                       iconColor: Colors.red,
                       iconSize: Dimentions.iconSize16 * 2,
@@ -186,7 +186,7 @@ class _SalesGridState extends State<SalesGrid> {
                                 BorderRadius.circular(Dimentions.radius15))),
                     onPressed: _exportDataGridToExcel,
                     child: AppIcon(
-                        iconData: Icons.currency_exchange,
+                        iconData: Icons.dataset,
                         backgroundColor: Colors.transparent,
                         iconColor: Colors.green,
                         iconSize: Dimentions.iconSize16 * 2),

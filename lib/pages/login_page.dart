@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:cash_book_app4/model/sales_model.dart';
 import 'package:cash_book_app4/utils/app_icon.dart';
 import 'package:cash_book_app4/utils/password_text_field.dart';
 import 'package:cash_book_app4/utils/text_field.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 import '../routes/routes_helper.dart';
 import '../utils/appcolors.dart';
@@ -32,8 +34,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    Timer(const Duration(seconds: 5),
-        () => Get.toNamed(RoutesHelper.getHomePage()));
+    /*Timer(const Duration(seconds: 5),
+        () => Get.toNamed(RoutesHelper.getHomePage()));*/
     super.initState();
   }
 
@@ -146,6 +148,12 @@ class _LoginPageState extends State<LoginPage> {
                         backgroundColor: Color(0xFFe07e22),
                       ));
                     } else {
+                      context
+                          .read<SalesModel>()
+                          .addUserId(int.parse(_userIdController.text));
+                      context
+                          .read<SalesModel>()
+                          .addShopId(int.parse(_shopIdController.text));
                       Get.toNamed(RoutesHelper.getHomePage());
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(

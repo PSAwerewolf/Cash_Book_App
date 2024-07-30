@@ -1,3 +1,4 @@
+import 'package:cash_book_app4/model/sales_model.dart';
 import 'package:cash_book_app4/routes/routes_helper.dart';
 import 'package:cash_book_app4/utils/app_icon.dart';
 import 'package:cash_book_app4/utils/appcolors.dart';
@@ -9,6 +10,7 @@ import 'package:cash_book_app4/widgets/small_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -304,7 +306,7 @@ class _SettingsPageState extends State<SettingsPage> {
               SizedBox(height: Dimentions.height10),
               GestureDetector(
                 onTap: () {
-                  Get.toNamed(RoutesHelper.getSalesReport());
+                  Get.toNamed(RoutesHelper.getExpenseReport());
                 },
                 child: Row(
                   children: [
@@ -542,15 +544,20 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   );
                 },
-                child: Row(
-                  children: [
-                    AppIcon(
-                        iconData: Icons.logout,
-                        iconColor: Colors.red,
-                        backgroundColor: Colors.white),
-                    SizedBox(width: Dimentions.width10),
-                    BigText(text: "Logout")
-                  ],
+                child: GestureDetector(
+                  onTap: () {
+                    context.read<SalesModel>().clearUserData();
+                  },
+                  child: Row(
+                    children: [
+                      AppIcon(
+                          iconData: Icons.logout,
+                          iconColor: Colors.red,
+                          backgroundColor: Colors.white),
+                      SizedBox(width: Dimentions.width10),
+                      BigText(text: "Logout")
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: Dimentions.height45),

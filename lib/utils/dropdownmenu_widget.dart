@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cash_book_app4/model/product_items.dart';
 import 'package:cash_book_app4/utils/app_icon.dart';
 import 'package:cash_book_app4/utils/dimentions.dart';
@@ -14,46 +16,41 @@ class DropdownMenuWidget extends StatefulWidget {
 }
 
 class DropdownMenuWidgetState extends State<DropdownMenuWidget> {
-  late List<DropdownMenuEntry<dynamic>> _dropDownItems = widget.itemList == null
-      ? defaultList
-      : [
-          DropdownMenuEntry(value: '1', label: 'Sales'),
-          for (var item in widget.itemList!)
-            DropdownMenuEntry(
-                value: item.id.toString(), label: item.productName)
-        ];
+  late List<DropdownMenuEntry<dynamic>> _dropDownItems = [];
 
   @override
   void initState() {
+    _initializeItemList();
+    getSelectedValue();
     super.initState();
   }
 
   double? getSelectedValue() {
-    print(widget.itemList?[int.parse(_selectedValue!)].productName);
-    print(widget.itemList?[int.parse(_selectedValue!)].id);
-    return widget.itemList?[int.parse(_selectedValue!)].unitPrice;
+    var index = widget.itemList
+        ?.indexWhere((entry) => entry.id == int.parse(_selectedValue!));
+    return _selectedValue == '0' ? 00.00 : widget.itemList?[index!].unitPrice;
   }
 
   List<DropdownMenuEntry<dynamic>> defaultList = [
-    DropdownMenuEntry(value: '1', label: 'Today'),
-    DropdownMenuEntry(value: '2', label: 'Yesterday'),
-    DropdownMenuEntry(value: '3', label: 'Last Week'),
-    DropdownMenuEntry(value: '4', label: 'Last Month'),
-    DropdownMenuEntry(value: '5', label: 'Last Year'),
+    DropdownMenuEntry(value: '0', label: 'Today'),
+    DropdownMenuEntry(value: '1', label: 'Yesterday'),
+    DropdownMenuEntry(value: '2', label: 'Last Week'),
+    DropdownMenuEntry(value: '3', label: 'Last Month'),
+    DropdownMenuEntry(value: '4', label: 'Last Year'),
   ];
 
-  /*void _initializeItemList() {
-    int i = 0;
+  void _initializeItemList() {
     _dropDownItems = widget.itemList == null
         ? _dropDownItems = defaultList
         : [
+            DropdownMenuEntry(value: '0', label: 'Sales'),
             for (var item in widget.itemList!)
               DropdownMenuEntry(
-                  value: '${i + 1}', label: '${item.productName}'),
+                  value: '${item.id}', label: '${item.productName}'),
           ];
-  }*/
+  }
 
-  String? _selectedValue = '1';
+  String? _selectedValue = '0';
   @override
   Widget build(BuildContext context) {
     return DropdownMenu(

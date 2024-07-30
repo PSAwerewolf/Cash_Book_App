@@ -1,10 +1,13 @@
 import 'package:cash_book_app4/pages/add_sales.dart';
-import 'package:cash_book_app4/pages/sales_grid.dart';
+import 'package:cash_book_app4/pages/sales_list_grid.dart';
 import 'package:cash_book_app4/utils/dimentions.dart';
 import 'package:cash_book_app4/widgets/big_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../model/sales_model.dart';
 import '../utils/app_icon.dart';
 import '../utils/appcolors.dart';
 import '../utils/text_field.dart';
@@ -19,6 +22,9 @@ class SalesPage extends StatefulWidget {
 class _SalesPageState extends State<SalesPage> {
   @override
   Widget build(BuildContext context) {
+    DateTime chartDate = DateTime.now();
+    context.read<SalesModel>().fetchProductSales();
+    final productSalesList = context.watch<SalesModel>().salesList;
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -32,7 +38,7 @@ class _SalesPageState extends State<SalesPage> {
               children: [
                 BigText(text: "Enter your sales here"),
                 SizedBox(
-                  height: Dimentions.height10,
+                  height: Dimentions.height20,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -61,13 +67,15 @@ class _SalesPageState extends State<SalesPage> {
                   ),
                 ),
                 SizedBox(
-                  height: Dimentions.height10,
+                  height: Dimentions.height20,
                 ),
-                BigText(text: "Date"),
+                BigText(
+                    text:
+                        "Date : ${chartDate.day} - ${chartDate.month} - ${chartDate.year}"),
                 SizedBox(
-                  height: Dimentions.height10,
+                  height: Dimentions.height20,
                 ),
-                Container(child: SalesGrid()),
+                Container(child: SalesListGrid()),
               ],
             ),
           ),
