@@ -1,9 +1,12 @@
+import 'package:cash_book_app4/model/expense_category.dart';
+import 'package:cash_book_app4/model/sales_model.dart';
 import 'package:cash_book_app4/utils/app_icon.dart';
 import 'package:cash_book_app4/utils/num_button_widget.dart';
 import 'package:cash_book_app4/utils/text_field.dart';
 import 'package:cash_book_app4/widgets/big_text.dart';
 import 'package:cash_book_app4/widgets/small_text.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/appcolors.dart';
 import '../utils/dimentions.dart';
@@ -20,6 +23,9 @@ class _AddExpenseState extends State<AddExpense> {
   TextEditingController _priceController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    List<ExpenseCategory> expCatList =
+        context.read<SalesModel>().getExpenseCategoryList;
+    context.watch<SalesModel>().fetchShopExpenseCategoryCache();
     return Container(
       width: Dimentions.pageView450 * 2,
       child: Column(
@@ -29,7 +35,9 @@ class _AddExpenseState extends State<AddExpense> {
           SizedBox(
             height: Dimentions.height15,
           ),
-          DropdownMenuWidget(),
+          DropdownMenuWidget(
+            expenseCategory: expCatList,
+          ),
           SizedBox(
             height: Dimentions.height15,
           ),

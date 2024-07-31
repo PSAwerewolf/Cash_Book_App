@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cash_book_app4/model/expense_category.dart';
 import 'package:cash_book_app4/model/product_items.dart';
 import 'package:cash_book_app4/model/product_sales.dart';
 import 'package:cash_book_app4/model/shop_expense.dart';
@@ -12,7 +13,7 @@ class SalesModel extends ChangeNotifier {
   //Sales List
   List<ProductSales> _sales = [];
 
-  List<ProductSales> get salesList => _sales;
+  List<ProductSales> get getSalesList => _sales;
 
   /*Future<void> fetchProductSales() async {
     var url = Uri.parse("http://${ip}/CashBookApp/getAllSales.php");
@@ -63,9 +64,12 @@ class SalesModel extends ChangeNotifier {
         throw Exception('Failed to load product Sales from API');
       }
     } catch (error) {
-      //print("Fetching data from Cache");
+      throw Exception('Failed to load product Sales and no API data available');
+    }
+  }
 
-      // Try to get data from cache
+  Future<void> fetchProductSalesCache() async {
+    try {
       final prefs = await SharedPreferences.getInstance();
       final cachedData = prefs.getString('cachedSales');
 
@@ -83,9 +87,11 @@ class SalesModel extends ChangeNotifier {
 
         notifyListeners();
       } else {
-        throw Exception(
-            'Failed to load product Sales and no cached data available');
+        throw Exception('Failed to load product Sales from Cache');
       }
+    } catch (error) {
+      throw Exception(
+          'Failed to load product Sales and no cached data available');
     }
   }
 
@@ -114,7 +120,7 @@ class SalesModel extends ChangeNotifier {
     }
   }
 
-  late double _totalAmount;
+  double _totalAmount = 0.0;
 
   double get getTotalAmount => _totalAmount;
 
@@ -164,11 +170,11 @@ class SalesModel extends ChangeNotifier {
         final List<dynamic> responseData = json.decode(response.body);
         _expense = responseData
             .map((expenseData) => ShopExpense(
-                expenseDescription: expenseData['expense_desc'],
-                totalAmount: double.parse(expenseData['total_amount']),
-                addedDate: DateTime.parse(expenseData['added_date']),
-                userId: int.parse(expenseData['user_id']),
-                shopId: int.parse(expenseData['shop_id'])))
+                  expenseDescription: expenseData['expense_desc'],
+                  totalAmount: double.parse(expenseData['total_amount']),
+                  addedDate: DateTime.parse(expenseData['added_date']),
+                  userId: int.parse(expenseData['user_id']),
+                ))
             .toList();
 
         // Cache the data
@@ -181,9 +187,12 @@ class SalesModel extends ChangeNotifier {
         throw Exception('Failed to load Shop Expenses');
       }
     } catch (error) {
-      // Error handling and loading from cache
+      throw Exception('Failed to load Shop Expenses and no API data available');
+    }
+  }
 
-      //print("Fetching Data from cache");
+  Future<void> fetchShopExpenseCache() async {
+    try {
       final prefs = await SharedPreferences.getInstance();
       final cachedData = prefs.getString('cachedExpenses');
 
@@ -191,44 +200,182 @@ class SalesModel extends ChangeNotifier {
         final List<dynamic> responseData = json.decode(cachedData);
         _expense = responseData
             .map((expenseData) => ShopExpense(
-                expenseDescription: expenseData['expense_desc'],
-                totalAmount: double.parse(expenseData['total_amount']),
-                addedDate: DateTime.parse(expenseData['added_date']),
-                userId: int.parse(expenseData['user_id']),
-                shopId: int.parse(expenseData['shop_id'])))
+                  expenseDescription: expenseData['expense_desc'],
+                  totalAmount: double.parse(expenseData['total_amount']),
+                  addedDate: DateTime.parse(expenseData['added_date']),
+                  userId: int.parse(expenseData['user_id']),
+                ))
             .toList();
         notifyListeners();
       } else {
-        throw Exception(
-            'Failed to load Shop Expenses and no cached data available');
+        // Handle non-200 status codes, if necessary
+        throw Exception('Failed to load Shop Expenses');
       }
+    } catch (error) {
+      throw Exception(
+          'Failed to load Shop Expenses and no cached data available');
+    }
+  }
+
+  Future<double> getTotalExpenseAmount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final cachedData = prefs.getString('cachedExpenses');
+
+    if (cachedData != null) {
+      final List<dynamic> responseData = json.decode(cachedData);
+
+      // Parse the data into ProductSales objects
+      final List<ShopExpense> expense = responseData
+          .map((expenseData) => ShopExpense(
+              expenseDescription: expenseData['expense_desc'],
+              totalAmount: double.parse(expenseData['total_amount']),
+              addedDate: DateTime.parse(expenseData['added_date']),
+              userId: int.parse(expenseData['user_id'])))
+          .toList();
+
+      // Calculate the total sales amount
+      double totalAmount =
+          expense.fold(0, (sum, sale) => sum + sale.totalAmount);
+
+      return totalAmount;
+    } else {
+      throw Exception('No cached sales data available');
+    }
+  }
+
+  double _totalExpenseAmount = 0.0;
+
+  double get getExpenseTotalAmount => _totalExpenseAmount;
+
+  void getTotalExpense() async {
+    try {
+      double totalAmount = await getTotalExpenseAmount();
+      _totalExpenseAmount = totalAmount;
+      notifyListeners();
+    } catch (e) {
+      notifyListeners();
+    }
+  }
+
+  //Expense Category
+  List<ExpenseCategory> _expenseCategory = [];
+
+  List<ExpenseCategory> get getExpenseCategoryList => _expenseCategory;
+
+  /*Future<void> fetchShopExpense() async {
+    var url = Uri.parse("http://${ip}/CashBookApp/getAllExpenses.php");
+    final response = await http.get(url);
+    //print(response.statusCode);
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = json.decode(response.body);
+      _expense = responseData
+          .map((productData) => ShopExpense(
+              expenseDescription: productData['expense_desc'],
+              totalAmount: double.parse(productData['total_amount']),
+              addedDate: DateTime.parse(productData['added_date']),
+              userId: int.parse(productData['user_id']),
+              shopId: int.parse(productData['shop_id'])))
+          .toList();
+      notifyListeners();
+    } else {
+      throw Exception('Failed to load Shop Expenses');
+    }
+  }*/
+  Future<void> fetchShopExpenseCategory() async {
+    var url = Uri.parse("http://${ip}/CashBookApp/getAllExpenseCategory.php");
+
+    try {
+      final response = await http.get(url);
+      //print("Fetching Data from Database");
+      if (response.statusCode == 200) {
+        // Parse and map the response data
+        final List<dynamic> responseData = json.decode(response.body);
+        _expenseCategory = responseData
+            .map((expenseData) => ExpenseCategory(
+                id: expenseData['id'],
+                expenseCategory: expenseData['expense_desc']))
+            .toList();
+
+        // Cache the data
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString('cachedExpensesCategory', json.encode(responseData));
+
+        notifyListeners();
+      } else {
+        // Handle non-200 status codes, if necessary
+        throw Exception('Failed to load Shop Expenses');
+      }
+    } catch (error) {
+      throw Exception('Failed to load Shop Expenses and no API data available');
+    }
+  }
+
+  Future<void> fetchShopExpenseCategoryCache() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final cachedData = prefs.getString('cachedExpensesCategory');
+
+      if (cachedData != null) {
+        final List<dynamic> responseData = json.decode(cachedData);
+        _expenseCategory = responseData
+            .map((expenseData) => ExpenseCategory(
+                id: expenseData['id'],
+                expenseCategory: expenseData['expense_desc']))
+            .toList();
+        notifyListeners();
+      } else {
+        // Handle non-200 status codes, if necessary
+        throw Exception('Failed to load Shop Expenses');
+      }
+    } catch (error) {
+      throw Exception(
+          'Failed to load Shop Expenses and no cached data available');
     }
   }
 
   // Add New Sales
   List<ProductSales> _newSales = [];
+  List<ProductSales> _mainSales = [];
+  double _totalMainSales = 0.0;
   List<ProductSales> get getNewSales => _newSales;
+  List<ProductSales> get getMainSales => _mainSales;
+  double get getTotalMainSales => _totalMainSales;
+
   void addNewSales(
-      int id, String productName, double totalAmount, DateTime, addedDate) {
-    /*CartModel? cartItem = _cart.firstWhereOrNull((item) {
-      bool isSameFood = item.products == product;
-
-      return isSameFood;
-    });*/
-
+      int id, String productName, double totalAmount, DateTime addedDate) {
     _newSales.add(ProductSales(
         id: id,
         productName: productName,
         totalAmount: totalAmount,
         addedDate: addedDate));
+    _totalMainSales += totalAmount;
 
     notifyListeners();
   }
 
-  void addMainSales(List<ProductSales> newList) {
-    for (int i = 0; i < _newSales.length; i++) {
-      _sales.add(_newSales[i]);
-    }
+  void clearTotalMainSales() {
+    _totalMainSales = 0.0;
+    notifyListeners();
+  }
+
+  void confirmSales() {
+    for (int i = 0; i < _newSales.length; i++) _mainSales.add(_newSales[i]);
+
+    _newSales.clear();
+    notifyListeners();
+  }
+
+  // Add Expenses
+
+  //remove Product Daily Sales
+
+  void deleteItem(int index) {
+    _newSales.length == 1
+        ? _totalMainSales = 0.0
+        : _totalMainSales -= _newSales[index].totalAmount;
+    _newSales.removeAt(index);
+
+    notifyListeners();
   }
 
   //Product Category List
@@ -282,9 +429,12 @@ class SalesModel extends ChangeNotifier {
         throw Exception('Failed to load product items from API');
       }
     } catch (error) {
-      //print("Fetching data from Cache");
+      throw Exception('Failed to load product items and no API data available');
+    }
+  }
 
-      // Try to get data from cache
+  Future<void> fetchProductItemsCache() async {
+    try {
       final prefs = await SharedPreferences.getInstance();
       final cachedData = prefs.getString('cachedProductItems');
       if (cachedData != null) {
@@ -300,9 +450,11 @@ class SalesModel extends ChangeNotifier {
 
         notifyListeners();
       } else {
-        throw Exception(
-            'Failed to load product items and no cached data available');
+        throw Exception('Failed to load product items from Cache');
       }
+    } catch (error) {
+      throw Exception(
+          'Failed to load product items and no cached data available');
     }
   }
 
@@ -329,4 +481,6 @@ class SalesModel extends ChangeNotifier {
     _userId = 0;
     notifyListeners();
   }
+
+  // Add Expense Category
 }

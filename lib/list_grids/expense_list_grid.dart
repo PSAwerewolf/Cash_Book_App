@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 // Local import
 import '../utils/app_icon.dart';
-import 'helper/save_file_mobile.dart'
+import '../pages/helper/save_file_mobile.dart'
     if (dart.library.html) 'helper/save_file_web.dart' as helper;
 
 import '../utils/dimentions.dart';
@@ -68,8 +68,10 @@ class _ExpenseListGridState extends State<ExpenseListGrid> {
 
   @override
   Widget build(BuildContext context) {
-    context.read<SalesModel>().fetchShopExpense();
+    context.read<SalesModel>().fetchShopExpenseCache();
     final shopExpenseList = context.watch<SalesModel>().expenseList;
+    context.watch<SalesModel>().getTotalExpense();
+    double totalExpense = context.read<SalesModel>().getExpenseTotalAmount;
     _sales = shopExpenseList;
     _salesDataSource = SalesDataSource(_sales);
     return Container(
@@ -137,7 +139,7 @@ class _ExpenseListGridState extends State<ExpenseListGrid> {
                     text: "Total Amount : ",
                   ),
                   BigText(
-                    text: "Rs. 150000.00",
+                    text: "Rs. ${totalExpense.toStringAsFixed(2)}",
                   ),
                 ]),
             decoration: BoxDecoration(

@@ -1,12 +1,12 @@
-import 'package:cash_book_app4/pages/dashboard_page.dart';
-import 'package:cash_book_app4/pages/sales_page.dart';
-import 'package:cash_book_app4/pages/settings_page.dart';
+import 'package:cash_book_app4/pages/home/dashboard_page.dart';
+import 'package:cash_book_app4/pages/home/sales_page.dart';
+import 'package:cash_book_app4/pages/home/settings_page.dart';
 import 'package:cash_book_app4/utils/dimentions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
-import '../utils/appcolors.dart';
+import '../../utils/appcolors.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

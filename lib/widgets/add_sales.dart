@@ -25,7 +25,7 @@ class _AddSalesState extends State<AddSales> {
   TextEditingController _priceController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    context.read<SalesModel>().fetchProductItems();
+    context.read<SalesModel>().fetchProductItemsCache();
     var itemList = context.watch<SalesModel>().getProductItems;
     return SingleChildScrollView(
       child: Container(
@@ -183,7 +183,19 @@ class _AddSalesState extends State<AddSales> {
                               padding: EdgeInsets.symmetric(
                                 vertical: Dimentions.height10,
                               )),
-                          onPressed: () {},
+                          onPressed: () {
+                            context.read<SalesModel>().addNewSales(
+                                dropDownKey.currentState!.getSelectedValueId()
+                                    as int,
+                                dropDownKey.currentState!
+                                    .getSelectedValueProdName() as String,
+                                double.parse(_priceController.text),
+                                DateTime.now());
+
+                            setState(() {
+                              _priceController.text = '0';
+                            });
+                          },
                           child: BigText(
                             text: "Add",
                             color: Colors.white,

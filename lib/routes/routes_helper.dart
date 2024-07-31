@@ -1,11 +1,11 @@
 import 'dart:math';
 
-import 'package:cash_book_app4/pages/login_page.dart';
-import 'package:cash_book_app4/pages/sales_report.dart';
+import 'package:cash_book_app4/pages/auth/login_page.dart';
+import 'package:cash_book_app4/pages/Report/sales_report.dart';
 import 'package:get/get.dart';
 
-import '../pages/expense_report.dart';
-import '../pages/home_page.dart';
+import '../pages/Report/expense_report.dart';
+import '../pages/home/home_page.dart';
 import '../splash_page.dart';
 
 class RoutesHelper {

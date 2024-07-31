@@ -1,14 +1,14 @@
-import 'package:cash_book_app4/pages/add_expense.dart';
-import 'package:cash_book_app4/pages/add_sales.dart';
+import 'package:cash_book_app4/widgets/add_expense.dart';
+import 'package:cash_book_app4/widgets/add_sales.dart';
 import 'package:cash_book_app4/utils/appcolors.dart';
 import 'package:cash_book_app4/utils/dropdownmenu_widget.dart';
 import 'package:cash_book_app4/utils/line_chart_widget.dart';
 import 'package:cash_book_app4/widgets/big_text.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/app_icon.dart';
-import '../utils/dimentions.dart';
-import '../widgets/small_text.dart';
+import '../../utils/app_icon.dart';
+import '../../utils/dimentions.dart';
+import '../../widgets/small_text.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});

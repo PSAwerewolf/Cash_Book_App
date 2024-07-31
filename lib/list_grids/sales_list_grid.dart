@@ -7,11 +7,10 @@ import 'package:syncfusion_flutter_datagrid_export/export.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 import 'package:provider/provider.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Local import
 import '../utils/app_icon.dart';
-import 'helper/save_file_mobile.dart'
+import '../pages/helper/save_file_mobile.dart'
     if (dart.library.html) 'helper/save_file_web.dart' as helper;
 
 import '../utils/dimentions.dart';
@@ -62,18 +61,16 @@ class _SalesListGridState extends State<SalesListGrid> {
 
   @override
   void initState() {
-    _salesDataSource = SalesDataSource(_sales);
+    _salesDataSource = SalesDataSource(_sales, context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    context.read<SalesModel>().fetchProductSales();
-    double totalAmount = context.read<SalesModel>().getTotalAmount;
-    context.read<SalesModel>().getTotal();
-    final productSalesList = context.watch<SalesModel>().salesList;
-    _sales = productSalesList;
-    _salesDataSource = SalesDataSource(_sales);
+    final productDailySales = context.watch<SalesModel>().getNewSales;
+    double totalAmount = context.watch<SalesModel>().getTotalMainSales;
+    _sales = productDailySales;
+    _salesDataSource = SalesDataSource(_sales, context);
     return Container(
       child: Column(
         children: [
@@ -113,6 +110,7 @@ class _SalesListGridState extends State<SalesListGrid> {
                     )),
                 GridColumn(
                     columnName: "total_amount",
+                    allowSorting: false,
                     label: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -122,6 +120,13 @@ class _SalesListGridState extends State<SalesListGrid> {
                         ),
                       ),
                     )),
+                GridColumn(
+                    columnName: 'delete',
+                    allowFiltering: false,
+                    label: Container(
+                        padding: EdgeInsets.all(8.0),
+                        alignment: Alignment.center,
+                        child: Text('Delete'))),
               ],
             ),
           ),
@@ -139,7 +144,7 @@ class _SalesListGridState extends State<SalesListGrid> {
                     text: "Total Amount : ",
                   ),
                   BigText(
-                    text: "Rs. ${totalAmount}",
+                    text: "Rs. ${totalAmount.toStringAsFixed(2)}",
                   ),
                 ]),
             decoration: BoxDecoration(
@@ -202,17 +207,21 @@ class _SalesListGridState extends State<SalesListGrid> {
 }
 
 class SalesDataSource extends DataGridSource {
-  SalesDataSource(List<ProductSales> sales) {
+  BuildContext? context;
+  List<ProductSales> sales;
+
+  SalesDataSource(this.sales, this.context) {
     dataGridRows = sales
         .map<DataGridRow>((dataGridRow) => DataGridRow(cells: [
               DataGridCell<String>(
                   columnName: "added_date",
                   value:
-                      '${dataGridRow.addedDate.day.toString()} - ${dataGridRow.addedDate.month.toString()} - ${dataGridRow.addedDate.year.toString()}'),
+                      '${dataGridRow.addedDate.hour.toString()} . ${dataGridRow.addedDate.minute.toString()}'),
               DataGridCell<String>(
                   columnName: "product_name", value: dataGridRow.productName),
               DataGridCell<double>(
                   columnName: "total_amount", value: dataGridRow.totalAmount),
+              DataGridCell<Widget>(columnName: "delete", value: null),
             ]))
         .toList();
   }
@@ -223,13 +232,40 @@ class SalesDataSource extends DataGridSource {
 
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
-    return DataGridRowAdapter(
-        cells: row.getCells().map<Widget>((dataGridCell) {
-      return Container(
-        padding: EdgeInsets.only(left: Dimentions.height20),
-        alignment: Alignment.centerLeft,
-        child: Text(dataGridCell.value.toString()),
-      );
-    }).toList());
+    return DataGridRowAdapter(cells: [
+      Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(8.0),
+        child: Text(row.getCells()[0].value.toString()),
+      ),
+      Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(8.0),
+        child: Text(row.getCells()[1].value.toString()),
+      ),
+      Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(8.0),
+        child: Text(row.getCells()[2].value.toString()),
+      ),
+      Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(8.0),
+        child: IconButton(
+          icon: AppIcon(
+            iconData: Icons.delete,
+            iconColor: Colors.red,
+            backgroundColor: Colors.transparent,
+          ),
+          onPressed: () {
+            // Handle the delete action
+
+            int index = dataGridRows.indexOf(row);
+
+            Provider.of<SalesModel>(context!, listen: false).deleteItem(index);
+          },
+        ),
+      ),
+    ]);
   }
 }

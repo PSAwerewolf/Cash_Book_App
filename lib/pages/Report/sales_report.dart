@@ -1,19 +1,24 @@
-import 'package:cash_book_app4/pages/expense_list_grid.dart';
-import 'package:cash_book_app4/pages/sales_list_grid.dart';
+import 'package:cash_book_app4/widgets/add_sales.dart';
+import 'package:cash_book_app4/list_grids/sales_list_grid.dart';
+import 'package:cash_book_app4/list_grids/sales_report_grid.dart';
 import 'package:cash_book_app4/utils/dimentions.dart';
 import 'package:cash_book_app4/utils/dropdownmenu_widget.dart';
 import 'package:cash_book_app4/widgets/big_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ExpenseReport extends StatefulWidget {
-  const ExpenseReport({super.key});
+import '../../utils/app_icon.dart';
+import '../../utils/appcolors.dart';
+import '../../utils/text_field.dart';
+
+class SalesReport extends StatefulWidget {
+  const SalesReport({super.key});
 
   @override
-  State<ExpenseReport> createState() => _ExpenseReportState();
+  State<SalesReport> createState() => _SalesReportState();
 }
 
-class _ExpenseReportState extends State<ExpenseReport> {
+class _SalesReportState extends State<SalesReport> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -30,7 +35,7 @@ class _ExpenseReportState extends State<ExpenseReport> {
               BigText(text: "Date"),
               Container(
                 //color: Colors.red,
-                child: ExpenseListGrid(),
+                child: SalesReportGrid(),
               ),
             ],
           ),

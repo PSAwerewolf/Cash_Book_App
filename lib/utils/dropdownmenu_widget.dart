@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:cash_book_app4/model/expense_category.dart';
 import 'package:cash_book_app4/model/product_items.dart';
 import 'package:cash_book_app4/utils/app_icon.dart';
 import 'package:cash_book_app4/utils/dimentions.dart';
@@ -7,9 +8,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DropdownMenuWidget extends StatefulWidget {
+  List<ExpenseCategory>? expenseCategory = [];
   List<ProductItems>? itemList = [];
   bool? searchOption;
-  DropdownMenuWidget({super.key, this.itemList, this.searchOption});
+  DropdownMenuWidget(
+      {super.key, this.itemList, this.searchOption, this.expenseCategory});
 
   @override
   State<DropdownMenuWidget> createState() => DropdownMenuWidgetState();
@@ -31,6 +34,20 @@ class DropdownMenuWidgetState extends State<DropdownMenuWidget> {
     return _selectedValue == '0' ? 00.00 : widget.itemList?[index!].unitPrice;
   }
 
+  int? getSelectedValueId() {
+    var index = widget.itemList
+        ?.indexWhere((entry) => entry.id == int.parse(_selectedValue!));
+    return _selectedValue == '0' ? 0 : widget.itemList?[index!].id;
+  }
+
+  String? getSelectedValueProdName() {
+    var index = widget.itemList
+        ?.indexWhere((entry) => entry.id == int.parse(_selectedValue!));
+    return _selectedValue == '0'
+        ? "Sales"
+        : widget.itemList?[index!].productName;
+  }
+
   List<DropdownMenuEntry<dynamic>> defaultList = [
     DropdownMenuEntry(value: '0', label: 'Today'),
     DropdownMenuEntry(value: '1', label: 'Yesterday'),
@@ -40,14 +57,22 @@ class DropdownMenuWidgetState extends State<DropdownMenuWidget> {
   ];
 
   void _initializeItemList() {
-    _dropDownItems = widget.itemList == null
-        ? _dropDownItems = defaultList
-        : [
-            DropdownMenuEntry(value: '0', label: 'Sales'),
-            for (var item in widget.itemList!)
-              DropdownMenuEntry(
-                  value: '${item.id}', label: '${item.productName}'),
-          ];
+    if (widget.itemList == null && widget.expenseCategory == null) {
+      _dropDownItems = defaultList;
+    } else if (widget.expenseCategory == null) {
+      _dropDownItems = [
+        DropdownMenuEntry(value: '0', label: 'Sales'),
+        for (var item in widget.itemList!)
+          DropdownMenuEntry(value: '${item.id}', label: '${item.productName}'),
+      ];
+    } else {
+      _dropDownItems = [
+        DropdownMenuEntry(value: '0', label: 'Expense'),
+        for (var expense in widget.expenseCategory!)
+          DropdownMenuEntry(
+              value: '${expense.id}', label: '${expense.expenseCategory}')
+      ];
+    }
   }
 
   String? _selectedValue = '0';

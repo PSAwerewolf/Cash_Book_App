@@ -11,11 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-import '../routes/routes_helper.dart';
-import '../utils/appcolors.dart';
-import '../utils/dimentions.dart';
-import '../widgets/big_text.dart';
-import '../widgets/small_text.dart';
+import '../../routes/routes_helper.dart';
+import '../../utils/appcolors.dart';
+import '../../utils/dimentions.dart';
+import '../../widgets/big_text.dart';
+import '../../widgets/small_text.dart';
 import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
@@ -154,17 +154,21 @@ class _LoginPageState extends State<LoginPage> {
                       context
                           .read<SalesModel>()
                           .addShopId(int.parse(_shopIdController.text));
+                      context.read<SalesModel>().fetchProductSales();
+                      context.read<SalesModel>().fetchShopExpense();
+                      context.read<SalesModel>().fetchProductItems();
+                      context.read<SalesModel>().fetchShopExpenseCategory();
                       Get.toNamed(RoutesHelper.getHomePage());
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(
                           '${loginStatus['status']}',
                           style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.lightBlueAccent,
                               fontWeight: FontWeight.w600,
                               fontSize: 18,
                               fontFamily: 'Roboto'),
                         ),
-                        backgroundColor: Color(0xFFe07e22),
+                        backgroundColor: Colors.white,
                       ));
                     }
                   } else {
@@ -172,12 +176,12 @@ class _LoginPageState extends State<LoginPage> {
                       content: Text(
                         'Fill the Fields',
                         style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.lightBlueAccent,
                             fontWeight: FontWeight.w600,
                             fontSize: 18,
                             fontFamily: 'Roboto'),
                       ),
-                      backgroundColor: Color(0xFFe07e22),
+                      backgroundColor: Colors.white,
                     ));
                   }
                 },

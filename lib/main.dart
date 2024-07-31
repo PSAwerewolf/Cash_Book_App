@@ -1,5 +1,5 @@
 import 'package:cash_book_app4/model/sales_model.dart';
-import 'package:cash_book_app4/pages/login_page.dart';
+import 'package:cash_book_app4/pages/auth/login_page.dart';
 import 'package:cash_book_app4/routes/routes_helper.dart';
 import 'package:cash_book_app4/splash_page.dart';
 import 'package:flutter/material.dart';
