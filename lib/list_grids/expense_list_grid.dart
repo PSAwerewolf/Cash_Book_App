@@ -71,7 +71,7 @@ class _ExpenseListGridState extends State<ExpenseListGrid> {
     context.read<SalesModel>().fetchShopExpenseCache();
     final shopExpenseList = context.watch<SalesModel>().expenseList;
     context.watch<SalesModel>().getTotalExpense();
-    double totalExpense = context.read<SalesModel>().getExpenseTotalAmount;
+    double totalExpense = context.watch<SalesModel>().getExpenseTotalAmount;
     _sales = shopExpenseList;
     _salesDataSource = SalesDataSource(_sales);
     return Container(

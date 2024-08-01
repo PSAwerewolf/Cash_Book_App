@@ -171,7 +171,9 @@ class _LoginPageState extends State<LoginPage> {
                         backgroundColor: Colors.white,
                       ));
                     }
-                  } else {
+                  } else if (_userIdController == null &&
+                      _shopIdController == null &&
+                      _passwordIdController == null) {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text(
                         'Fill the Fields',

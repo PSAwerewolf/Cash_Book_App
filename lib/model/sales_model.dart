@@ -61,7 +61,7 @@ class SalesModel extends ChangeNotifier {
 
         notifyListeners();
       } else {
-        throw Exception('Failed to load product Sales from API');
+        //throw Exception('Failed to load product Sales from API');
       }
     } catch (error) {
       throw Exception('Failed to load product Sales and no API data available');
@@ -292,7 +292,7 @@ class SalesModel extends ChangeNotifier {
         final List<dynamic> responseData = json.decode(response.body);
         _expenseCategory = responseData
             .map((expenseData) => ExpenseCategory(
-                id: expenseData['id'],
+                id: int.parse(expenseData['id']),
                 expenseCategory: expenseData['expense_desc']))
             .toList();
 
@@ -303,10 +303,12 @@ class SalesModel extends ChangeNotifier {
         notifyListeners();
       } else {
         // Handle non-200 status codes, if necessary
-        throw Exception('Failed to load Shop Expenses');
+        throw Exception(
+            'Failed to load Shop Expenses Category : ${response.statusCode}');
       }
     } catch (error) {
-      throw Exception('Failed to load Shop Expenses and no API data available');
+      throw Exception(
+          'Failed to load Shop Expenses Category and no API data available : ${error.toString()}');
     }
   }
 
@@ -319,17 +321,17 @@ class SalesModel extends ChangeNotifier {
         final List<dynamic> responseData = json.decode(cachedData);
         _expenseCategory = responseData
             .map((expenseData) => ExpenseCategory(
-                id: expenseData['id'],
+                id: int.parse(expenseData['id']),
                 expenseCategory: expenseData['expense_desc']))
             .toList();
         notifyListeners();
       } else {
         // Handle non-200 status codes, if necessary
-        throw Exception('Failed to load Shop Expenses');
+        throw Exception('Failed to load Shop Expenses Category');
       }
     } catch (error) {
       throw Exception(
-          'Failed to load Shop Expenses and no cached data available');
+          'Failed to load Shop Expenses Category and no cached data available : ${error.toString()}');
     }
   }
 
@@ -426,10 +428,12 @@ class SalesModel extends ChangeNotifier {
 
         notifyListeners();
       } else {
-        throw Exception('Failed to load product items from API');
+        throw Exception(
+            'Failed to load product items from API ${response.statusCode}');
       }
     } catch (error) {
-      throw Exception('Failed to load product items and no API data available');
+      throw Exception(
+          'Failed to load product items and no API data available ${error.toString()}');
     }
   }
 
@@ -450,11 +454,11 @@ class SalesModel extends ChangeNotifier {
 
         notifyListeners();
       } else {
-        throw Exception('Failed to load product items from Cache');
+        throw Exception('Failed to load product items from Cache ');
       }
     } catch (error) {
       throw Exception(
-          'Failed to load product items and no cached data available');
+          'Failed to load product items and no cached data available ${error.toString()}');
     }
   }
 
@@ -483,4 +487,59 @@ class SalesModel extends ChangeNotifier {
   }
 
   // Add Expense Category
+
+  Future<String> addExpenseCategory(String expenseDesc) async {
+    var url = Uri.parse("http://${ip}/CashBookApp/insertExpenseCategory.php");
+
+    try {
+      final response = await http.post(url, body: {
+        'expense_desc': expenseDesc,
+      });
+
+      if (response.statusCode == 200) {
+        var dataReceived = json.decode(response.body);
+
+        if (dataReceived == 'Success') {
+          return "Success";
+        } else {
+          throw Exception('Server error: ${dataReceived}');
+        }
+      } else {
+        throw Exception('HTTP error: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Capture the specific error message and rethrow it
+      throw Exception('Error in Connection: ${error.toString()}');
+    }
+  }
+
+  // Add Sales Category
+
+  Future<String> addOrUpdateProductItem(
+      String productName, String unitPrice) async {
+    var url = Uri.parse("http://${ip}/CashBookApp/insertSalesCategory.php");
+
+    try {
+      final response = await http.post(url, body: {
+        'product_name': productName,
+        'unit_price': unitPrice,
+      });
+
+      if (response.statusCode == 200) {
+        var dataReceived = json.decode(response.body);
+
+        if (dataReceived == 'Product price updated successfully' ||
+            dataReceived == 'Product added successfully') {
+          return dataReceived;
+        } else {
+          throw Exception('Server error: ${dataReceived}');
+        }
+      } else {
+        throw Exception('HTTP error: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Capture the specific error message and rethrow it
+      throw Exception('Error in Connection: ${error.toString()}');
+    }
+  }
 }

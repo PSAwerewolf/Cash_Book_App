@@ -92,7 +92,7 @@ class _SalesListGridState extends State<SalesListGrid> {
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
                         child: BigText(
-                          text: "Date",
+                          text: "Time",
                           size: 12,
                         ),
                       ),

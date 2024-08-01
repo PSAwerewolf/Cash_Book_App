@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'app_icon.dart';
@@ -11,6 +12,7 @@ class TextFieldWidget extends StatefulWidget {
   var controller;
   var validator;
   bool obSecure;
+  TextInputType? keyBoardType;
 
   TextFieldWidget(
       {super.key,
@@ -19,7 +21,8 @@ class TextFieldWidget extends StatefulWidget {
       required this.placeHolder,
       required this.controller,
       this.obSecure = false,
-      this.validator});
+      this.validator,
+      this.keyBoardType});
 
   @override
   State<TextFieldWidget> createState() => _TextFieldWidgetState();
@@ -43,6 +46,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           ]),
       child: TextFormField(
         obscureText: widget.obSecure,
+        keyboardType: widget.keyBoardType,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: widget.validator,
         controller: widget.controller,

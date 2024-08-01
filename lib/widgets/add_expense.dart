@@ -25,7 +25,7 @@ class _AddExpenseState extends State<AddExpense> {
   Widget build(BuildContext context) {
     List<ExpenseCategory> expCatList =
         context.read<SalesModel>().getExpenseCategoryList;
-    context.watch<SalesModel>().fetchShopExpenseCategoryCache();
+    context.read<SalesModel>().fetchShopExpenseCategoryCache();
     return Container(
       width: Dimentions.pageView450 * 2,
       child: Column(

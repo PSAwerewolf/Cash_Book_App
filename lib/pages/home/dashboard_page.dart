@@ -20,6 +20,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   DateTime selectedDate = DateTime.now();
   DateTime chartDate = DateTime.now();
+  DateTime chartStartDate = DateTime.now().subtract(Duration(days: 7));
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -93,18 +94,6 @@ class _DashboardPageState extends State<DashboardPage> {
                 )),
                 SizedBox(height: Dimentions.height30),
                 Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      BigText(
-                        text:
-                            "${selectedDate.day} - ${selectedDate.month} - ${selectedDate.year}",
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: Dimentions.height30),
-                Container(
                   child: Column(
                     children: [
                       Row(
@@ -170,7 +159,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         height: Dimentions.height15,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -182,12 +171,14 @@ class _DashboardPageState extends State<DashboardPage> {
                                   borderRadius: BorderRadius.circular(
                                       Dimentions.radius15),
                                 ),
-                                padding: EdgeInsets.all(Dimentions.height10),
+                                padding:
+                                    EdgeInsets.all(Dimentions.height10 / 2),
                               ),
                               onPressed: () {
                                 setState(() {
-                                  chartDate =
-                                      chartDate.subtract(Duration(days: 1));
+                                  chartDate = chartStartDate;
+                                  chartStartDate = chartStartDate
+                                      .subtract(Duration(days: 7));
                                 });
                               },
                               child: AppIcon(
@@ -197,11 +188,26 @@ class _DashboardPageState extends State<DashboardPage> {
                               )),
                           Container(
                               alignment: Alignment.center,
-                              padding: EdgeInsets.all(Dimentions.width5),
-                              width: Dimentions.width30 * 5,
-                              child: BigText(
-                                text:
-                                    "${chartDate.day} - ${chartDate.month} - ${chartDate.year}",
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  BigText(
+                                    text:
+                                        "${chartStartDate.day} - ${chartStartDate.month} - ${chartStartDate.year}",
+                                    color: Colors.black,
+                                    size: Dimentions.font16,
+                                  ),
+                                  SizedBox(
+                                    width: Dimentions.width30,
+                                  ),
+                                  BigText(
+                                    text:
+                                        "${chartDate.day} - ${chartDate.month} - ${chartDate.year}",
+                                    color: Colors.black,
+                                    size: Dimentions.font16,
+                                  ),
+                                ],
                               )),
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -213,11 +219,13 @@ class _DashboardPageState extends State<DashboardPage> {
                                   borderRadius: BorderRadius.circular(
                                       Dimentions.radius15),
                                 ),
-                                padding: EdgeInsets.all(Dimentions.height10),
+                                padding:
+                                    EdgeInsets.all(Dimentions.height10 / 2),
                               ),
                               onPressed: () {
                                 setState(() {
-                                  chartDate = chartDate.add(Duration(days: 1));
+                                  chartStartDate = chartDate;
+                                  chartDate = chartDate.add(Duration(days: 7));
                                 });
                               },
                               child: AppIcon(

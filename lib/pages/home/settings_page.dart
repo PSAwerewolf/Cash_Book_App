@@ -1,4 +1,5 @@
 import 'package:cash_book_app4/model/sales_model.dart';
+import 'package:cash_book_app4/pages/auth/login_page.dart';
 import 'package:cash_book_app4/routes/routes_helper.dart';
 import 'package:cash_book_app4/utils/app_icon.dart';
 import 'package:cash_book_app4/utils/appcolors.dart';
@@ -21,9 +22,12 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool _printerState = false;
+  bool successAdded = false;
 
   @override
   Widget build(BuildContext context) {
+    context.read<SalesModel>().fetchShopExpenseCategoryCache();
+
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -34,13 +38,14 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              //Shop Name
               Container(
                 child: BigText(
                   text: "Axis Shop",
                   size: Dimentions.font20 * 2,
                 ),
               ),
-              SizedBox(height: Dimentions.height10),
+              SizedBox(height: Dimentions.height10), // Address
               Container(
                 child: SmallText(
                   text: "Address",
@@ -48,10 +53,16 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               SizedBox(height: Dimentions.height45),
+
+              //Sales Category
               GestureDetector(
                 onTap: () {
                   TextEditingController categoryController =
                       TextEditingController();
+                  TextEditingController unitPriceController =
+                      TextEditingController();
+
+                  successAdded = false;
 
                   showDialog(
                     context: context,
@@ -85,7 +96,26 @@ class _SettingsPageState extends State<SettingsPage> {
                                     horizontal: Dimentions.width10),
                                 color: AppColors.mainColor,
                                 elevation: 0.1,
-                                onPressed: () {},
+                                onPressed: () {
+                                  try {
+                                    context
+                                        .watch<SalesModel>()
+                                        .addOrUpdateProductItem(
+                                            categoryController.text,
+                                            unitPriceController.text);
+
+                                    setState(() {
+                                      successAdded = true;
+                                    });
+                                  } catch (error) {
+                                    setState(() {
+                                      successAdded = false;
+                                    });
+                                  }
+
+                                  categoryController.clear();
+                                  unitPriceController.clear();
+                                },
                                 child: BigText(
                                   text: "Add",
                                   color: Colors.white,
@@ -109,8 +139,31 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ),
                                 placeHolder: "Enter the Category",
                                 controller: categoryController),
+                            TextFieldWidget(
+                                preIcon: AppIcon(
+                                  iconData: Icons.attach_money,
+                                  backgroundColor: Colors.transparent,
+                                ),
+                                keyBoardType: TextInputType.number,
+                                placeHolder: "Enter the Unit Price",
+                                controller: unitPriceController),
                             SizedBox(
                               height: Dimentions.height10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                BigText(text: "Status"),
+                                AppIcon(
+                                  iconData: successAdded
+                                      ? Icons.done_outline_rounded
+                                      : Icons.close,
+                                  backgroundColor: Colors.transparent,
+                                  iconSize: Dimentions.iconSize24,
+                                  iconColor:
+                                      successAdded ? Colors.green : Colors.red,
+                                )
+                              ],
                             ),
                           ],
                         ),
@@ -131,10 +184,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               SizedBox(height: Dimentions.height10),
+
+              //Expense Category
               GestureDetector(
                 onTap: () {
                   TextEditingController categoryController =
                       TextEditingController();
+                  successAdded = false;
 
                   showDialog(
                     context: context,
@@ -168,7 +224,23 @@ class _SettingsPageState extends State<SettingsPage> {
                                     horizontal: Dimentions.width10),
                                 color: AppColors.mainColor,
                                 elevation: 0.1,
-                                onPressed: () {},
+                                onPressed: () {
+                                  try {
+                                    context
+                                        .read<SalesModel>()
+                                        .addExpenseCategory(
+                                            categoryController.text);
+                                    setState(() {
+                                      successAdded = true;
+                                    });
+                                  } catch (error) {
+                                    setState(() {
+                                      successAdded = false;
+                                    });
+                                  }
+
+                                  categoryController.clear();
+                                },
                                 child: BigText(
                                   text: "Add",
                                   color: Colors.white,
@@ -187,13 +259,26 @@ class _SettingsPageState extends State<SettingsPage> {
                           children: [
                             TextFieldWidget(
                                 preIcon: AppIcon(
-                                  iconData: Icons.add,
+                                  iconData:
+                                      successAdded ? Icons.done : Icons.add,
                                   backgroundColor: Colors.transparent,
                                 ),
                                 placeHolder: "Enter the Category",
                                 controller: categoryController),
-                            SizedBox(
-                              height: Dimentions.height10,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                BigText(text: "Status"),
+                                AppIcon(
+                                  iconData: successAdded
+                                      ? Icons.done_outline_rounded
+                                      : Icons.close,
+                                  backgroundColor: Colors.transparent,
+                                  iconSize: Dimentions.iconSize24,
+                                  iconColor:
+                                      successAdded ? Colors.green : Colors.red,
+                                )
+                              ],
                             ),
                           ],
                         ),
@@ -215,10 +300,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               SizedBox(height: Dimentions.height10),
+
+              //Report Sales
               GestureDetector(
                 onTap: () {
                   TextEditingController categoryController =
                       TextEditingController();
+
+                  successAdded = false;
 
                   showDialog(
                     context: context,
@@ -304,6 +393,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               SizedBox(height: Dimentions.height10),
+
+              //Report Expense
               GestureDetector(
                 onTap: () {
                   Get.toNamed(RoutesHelper.getExpenseReport());
@@ -320,10 +411,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               const Spacer(),
+
+              //Store Settings
               GestureDetector(
                 onTap: () {
                   TextEditingController categoryController =
                       TextEditingController();
+                  successAdded = false;
 
                   showDialog(
                     context: context,
@@ -402,6 +496,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               SizedBox(height: Dimentions.height10),
+
+              //Printer Settings
               GestureDetector(
                 onTap: () {
                   showDialog(
@@ -491,6 +587,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               SizedBox(height: Dimentions.height10),
+
+              //Logout
               GestureDetector(
                 onTap: () {
                   showDialog(
@@ -527,7 +625,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                 elevation: 0.1,
                                 onPressed: () {
                                   Navigator.pop(context);
-                                  Get.toNamed(RoutesHelper.getLoginPage());
+                                  context.read<SalesModel>().clearUserData();
+                                  //Get.toNamed(RoutesHelper.getLoginPage());
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => LoginPage()),
+                                      (Route<dynamic> route) => false);
                                 },
                                 child: BigText(
                                   text: "Yes",
@@ -544,20 +648,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   );
                 },
-                child: GestureDetector(
-                  onTap: () {
-                    context.read<SalesModel>().clearUserData();
-                  },
-                  child: Row(
-                    children: [
-                      AppIcon(
-                          iconData: Icons.logout,
-                          iconColor: Colors.red,
-                          backgroundColor: Colors.white),
-                      SizedBox(width: Dimentions.width10),
-                      BigText(text: "Logout")
-                    ],
-                  ),
+                child: Row(
+                  children: [
+                    AppIcon(
+                        iconData: Icons.logout,
+                        iconColor: Colors.red,
+                        backgroundColor: Colors.white),
+                    SizedBox(width: Dimentions.width10),
+                    BigText(text: "Logout")
+                  ],
                 ),
               ),
               SizedBox(height: Dimentions.height45),

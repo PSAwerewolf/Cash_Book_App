@@ -23,7 +23,7 @@ class _SalesPageState extends State<SalesPage> {
   @override
   Widget build(BuildContext context) {
     DateTime chartDate = DateTime.now();
-    context.read<SalesModel>().fetchProductSales();
+    context.read<SalesModel>().fetchProductSalesCache();
     final productSalesList = context.watch<SalesModel>().getSalesList;
     return SafeArea(
       child: Scaffold(
