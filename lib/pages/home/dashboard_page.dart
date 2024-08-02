@@ -92,7 +92,14 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   ],
                 )),
-                SizedBox(height: Dimentions.height30),
+                SizedBox(height: Dimentions.height20),
+                Container(
+                  child: BigText(
+                    text:
+                        "${selectedDate.day} - ${selectedDate.month} - ${selectedDate.year}",
+                  ),
+                ),
+                SizedBox(height: Dimentions.height20),
                 Container(
                   child: Column(
                     children: [

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:cash_book_app4/model/sales_model.dart';
 import 'package:cash_book_app4/utils/app_icon.dart';
+import 'package:cash_book_app4/utils/custom_snackbar.dart';
 import 'package:cash_book_app4/utils/password_text_field.dart';
 import 'package:cash_book_app4/utils/text_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -65,146 +66,149 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-              vertical: Dimentions.height10, horizontal: Dimentions.width20),
-          child: Column(
-            children: [
-              Container(
-                height: Dimentions.height45 * 5,
-                width: Dimentions.height45 * 5,
-                decoration: BoxDecoration(color: Colors.transparent),
-                child: Image.asset(
-                  "assets/images/cashBookLogo.png",
-                  fit: BoxFit.cover,
+      child: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Scaffold(
+          body: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+                vertical: Dimentions.height10, horizontal: Dimentions.width20),
+            child: Column(
+              children: [
+                Container(
+                  height: Dimentions.height45 * 5,
+                  width: Dimentions.height45 * 5,
+                  decoration: BoxDecoration(color: Colors.transparent),
+                  child: Image.asset(
+                    "assets/images/cashBookLogo.png",
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              BigText(
-                text: "Cash BOOK",
-                color: AppColors.mainColor,
-                size: 40,
-              ),
-              SmallText(
-                text: "Simplified Cash Entry & Tracking App",
-                color: AppColors.paraColor,
-                size: 16,
-              ),
-              SizedBox(
-                height: Dimentions.height30,
-              ),
-              TextFieldWidget(
-                  preIcon: AppIcon(
-                    iconData: Icons.other_houses_rounded,
-                    backgroundColor: Colors.transparent,
-                    iconColor: AppColors.mainColor,
-                  ),
-                  placeHolder: 'Enter Shop Id',
-                  controller: _shopIdController),
-              TextFieldWidget(
-                  preIcon: AppIcon(
-                    iconData: Icons.person,
-                    backgroundColor: Colors.transparent,
-                    iconColor: AppColors.mainColor,
-                  ),
-                  placeHolder: 'Enter User Id',
-                  controller: _userIdController),
-              PasswordTextField(
-                controller: _passwordIdController,
-                placeHolder: 'Enter Password',
-                prefIcon: Icons.lock,
-                mainBorderColor: AppColors.mainColor,
-                errorBorderColor: Colors.red,
-              ),
-              SizedBox(
-                height: Dimentions.height10,
-              ),
+                BigText(
+                  text: "Cash BOOK",
+                  color: AppColors.mainColor,
+                  size: 40,
+                ),
+                SmallText(
+                  text: "Simplified Cash Entry & Tracking App",
+                  color: AppColors.paraColor,
+                  size: 16,
+                ),
+                SizedBox(
+                  height: Dimentions.height30,
+                ),
+                TextFieldWidget(
+                    preIcon: AppIcon(
+                      iconData: Icons.other_houses_rounded,
+                      backgroundColor: Colors.transparent,
+                      iconColor: AppColors.mainColor,
+                    ),
+                    placeHolder: 'Enter Shop Id',
+                    controller: _shopIdController),
+                TextFieldWidget(
+                    preIcon: AppIcon(
+                      iconData: Icons.person,
+                      backgroundColor: Colors.transparent,
+                      iconColor: AppColors.mainColor,
+                    ),
+                    placeHolder: 'Enter User Id',
+                    controller: _userIdController),
+                PasswordTextField(
+                  controller: _passwordIdController,
+                  placeHolder: 'Enter Password',
+                  prefIcon: Icons.lock,
+                  mainBorderColor: AppColors.mainColor,
+                  errorBorderColor: Colors.red,
+                ),
+                SizedBox(
+                  height: Dimentions.height10,
+                ),
 
-              SizedBox(
-                height: Dimentions.height10,
-              ),
+                SizedBox(
+                  height: Dimentions.height10,
+                ),
 
-              //Sign in Button
-              GestureDetector(
-                onTap: () async {
-                  var userId = _userIdController.text;
-                  var shopId = _shopIdController.text;
-                  var userPassword = _passwordIdController.text;
+                //Sign in Button
+                GestureDetector(
+                  onTap: () async {
+                    var userId = _userIdController.text;
+                    var shopId = _shopIdController.text;
+                    var userPassword = _passwordIdController.text;
 
-                  if (!(userId.isEmpty && userPassword.isEmpty)) {
-                    var loginStatus =
-                        await _login(shopId, userId, userPassword);
+                    if (!(userId.isEmpty && userPassword.isEmpty)) {
+                      var loginStatus =
+                          await _login(shopId, userId, userPassword);
 
-                    if (loginStatus['status'] != 'Login Successful') {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text(
-                          'Login UnSuccessful',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                              fontFamily: 'Roboto'),
-                        ),
-                        backgroundColor: Color(0xFFe07e22),
-                      ));
-                    } else {
-                      context
-                          .read<SalesModel>()
-                          .addUserId(int.parse(_userIdController.text));
-                      context
-                          .read<SalesModel>()
-                          .addShopId(int.parse(_shopIdController.text));
-                      context.read<SalesModel>().fetchProductSales();
-                      context.read<SalesModel>().fetchShopExpense();
-                      context.read<SalesModel>().fetchProductItems();
-                      context.read<SalesModel>().fetchShopExpenseCategory();
-                      Get.toNamed(RoutesHelper.getHomePage());
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                          '${loginStatus['status']}',
-                          style: TextStyle(
-                              color: Colors.lightBlueAccent,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                              fontFamily: 'Roboto'),
-                        ),
-                        backgroundColor: Colors.white,
-                      ));
+                      if (loginStatus['status'] != 'Login Successful') {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text(
+                            'Login UnSuccessful',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                                fontFamily: 'Roboto'),
+                          ),
+                          backgroundColor: Color(0xFFe07e22),
+                        ));
+                      } else {
+                        context
+                            .read<SalesModel>()
+                            .addUserId(int.parse(_userIdController.text));
+                        context
+                            .read<SalesModel>()
+                            .addShopId(int.parse(_shopIdController.text));
+                        context.read<SalesModel>().fetchProductSales();
+                        context.read<SalesModel>().fetchShopExpense();
+                        context.read<SalesModel>().fetchProductItems();
+                        context.read<SalesModel>().fetchShopExpenseCategory();
+                        Get.toNamed(RoutesHelper.getHomePage());
+                        CustomSnackbar(
+                          message: '${loginStatus['status']}',
+                          textStyle: TextStyle(
+                              color: AppColors.mainColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                          duration: Duration(seconds: 2),
+                        ).show(context);
+                      }
+                    } else if (_userIdController == null &&
+                        _shopIdController == null &&
+                        _passwordIdController == null) {
+                      CustomSnackbar(
+                        message: 'Fill the Fields',
+                        textStyle: TextStyle(
+                            color: AppColors.mainColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
+                        duration: Duration(seconds: 2),
+                      ).show(context);
                     }
-                  } else if (_userIdController == null &&
-                      _shopIdController == null &&
-                      _passwordIdController == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text(
-                        'Fill the Fields',
-                        style: TextStyle(
-                            color: Colors.lightBlueAccent,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
-                            fontFamily: 'Roboto'),
+
+                    _shopIdController.clear();
+                    _userIdController.clear();
+                    _passwordIdController.clear();
+                  },
+                  child: Container(
+                    width: Dimentions.screenWidth / 2,
+                    padding: EdgeInsets.symmetric(
+                        vertical: Dimentions.height10 / 2,
+                        horizontal: Dimentions.width20),
+                    decoration: BoxDecoration(
+                        color: AppColors.mainColor,
+                        borderRadius:
+                            BorderRadius.circular(Dimentions.radius20)),
+                    child: Center(
+                      child: BigText(
+                        text: "Sign in",
+                        color: Colors.white,
+                        size: Dimentions.font26,
                       ),
-                      backgroundColor: Colors.white,
-                    ));
-                  }
-                },
-                child: Container(
-                  width: Dimentions.screenWidth / 2,
-                  padding: EdgeInsets.symmetric(
-                      vertical: Dimentions.height10 / 2,
-                      horizontal: Dimentions.width20),
-                  decoration: BoxDecoration(
-                      color: AppColors.mainColor,
-                      borderRadius: BorderRadius.circular(Dimentions.radius20)),
-                  child: Center(
-                    child: BigText(
-                      text: "Sign in",
-                      color: Colors.white,
-                      size: Dimentions.font26,
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

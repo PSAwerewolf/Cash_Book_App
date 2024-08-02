@@ -1,5 +1,7 @@
 import 'package:cash_book_app4/model/product_sales.dart';
 import 'package:cash_book_app4/model/sales_model.dart';
+import 'package:cash_book_app4/utils/appcolors.dart';
+import 'package:cash_book_app4/utils/custom_snackbar.dart';
 import 'package:cash_book_app4/widgets/big_text.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -16,7 +18,9 @@ import '../pages/helper/save_file_mobile.dart'
 import '../utils/dimentions.dart';
 
 class SalesListGrid extends StatefulWidget {
-  const SalesListGrid({super.key});
+  const SalesListGrid({
+    super.key,
+  });
 
   @override
   State<SalesListGrid> createState() => _SalesListGridState();
@@ -68,7 +72,7 @@ class _SalesListGridState extends State<SalesListGrid> {
   @override
   Widget build(BuildContext context) {
     final productDailySales = context.watch<SalesModel>().getNewSales;
-    double totalAmount = context.watch<SalesModel>().getTotalMainSales;
+    double totalAmount = context.watch<SalesModel>().getTotalNewSales;
     _sales = productDailySales;
     _salesDataSource = SalesDataSource(_sales, context);
     return Container(
@@ -157,7 +161,7 @@ class _SalesListGridState extends State<SalesListGrid> {
           ),
           Container(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(
                   width: Dimentions.width20 * 5,
@@ -168,7 +172,28 @@ class _SalesListGridState extends State<SalesListGrid> {
                         shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(Dimentions.radius15))),
-                    onPressed: _exportDataGridToPdf,
+                    onPressed: () {
+                      if (_sales.isEmpty) {
+                        CustomSnackbar(
+                          message: 'List is Empty',
+                          backgroundColor: Colors.white,
+                          textStyle: TextStyle(
+                              color: AppColors.mainColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                          duration: Duration(seconds: 1),
+                        ).show(context);
+                      } else {
+                        Provider.of<SalesModel>(context, listen: false)
+                            .confirmSales();
+                        try {
+                          _exportDataGridToPdf();
+                        } catch (e) {
+                          CustomSnackbar(message: "${e.toString()}")
+                              .show(context);
+                        }
+                      }
+                    },
                     child: AppIcon(
                       iconData: Icons.feed,
                       backgroundColor: Colors.transparent,
@@ -189,7 +214,28 @@ class _SalesListGridState extends State<SalesListGrid> {
                         shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(Dimentions.radius15))),
-                    onPressed: _exportDataGridToExcel,
+                    onPressed: () {
+                      if (_sales.isEmpty) {
+                        CustomSnackbar(
+                          message: 'List is Empty',
+                          backgroundColor: Colors.white,
+                          textStyle: TextStyle(
+                              color: AppColors.mainColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                          duration: Duration(seconds: 1),
+                        ).show(context);
+                      } else {
+                        Provider.of<SalesModel>(context, listen: false)
+                            .confirmSales();
+                        try {
+                          _exportDataGridToExcel();
+                        } catch (e) {
+                          CustomSnackbar(message: "${e.toString()}")
+                              .show(context);
+                        }
+                      }
+                    },
                     child: AppIcon(
                         iconData: Icons.dataset,
                         backgroundColor: Colors.transparent,

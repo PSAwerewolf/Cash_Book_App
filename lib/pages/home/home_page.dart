@@ -31,11 +31,13 @@ class _HomePageState extends State<HomePage> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.home),
+        icon: Icon(
+          CupertinoIcons.home,
+          color: Colors.white,
+        ),
         title: ("Dash Board"),
         activeColorPrimary: AppColors.mainColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
-        iconSize: Dimentions.iconSize16 * 2,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(CupertinoIcons.settings),
@@ -86,7 +88,7 @@ class _HomePageState extends State<HomePage> {
         duration: Duration(milliseconds: 200),
       ),
       navBarStyle:
-          NavBarStyle.style12, // Choose the nav bar style with this property.
+          NavBarStyle.style15, // Choose the nav bar style with this property.
     );
   }
 }

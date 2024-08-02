@@ -67,8 +67,8 @@ class _SalesReportGridState extends State<SalesReportGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final productDailySales = context.watch<SalesModel>().getSalesList;
-    double totalAmount = context.watch<SalesModel>().getTotalAmount;
+    final productDailySales = context.watch<SalesModel>().getMainSales;
+    double totalAmount = context.watch<SalesModel>().getTotalMainSales;
     context.watch<SalesModel>().getTotal();
     _sales = productDailySales;
     _salesDataSource = SalesDataSource(_sales, context);

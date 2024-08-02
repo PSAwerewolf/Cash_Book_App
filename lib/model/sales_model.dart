@@ -339,9 +339,11 @@ class SalesModel extends ChangeNotifier {
   List<ProductSales> _newSales = [];
   List<ProductSales> _mainSales = [];
   double _totalMainSales = 0.0;
+  double _totalNewSales = 0.0;
   List<ProductSales> get getNewSales => _newSales;
   List<ProductSales> get getMainSales => _mainSales;
   double get getTotalMainSales => _totalMainSales;
+  double get getTotalNewSales => _totalNewSales;
 
   void addNewSales(
       int id, String productName, double totalAmount, DateTime addedDate) {
@@ -350,20 +352,17 @@ class SalesModel extends ChangeNotifier {
         productName: productName,
         totalAmount: totalAmount,
         addedDate: addedDate));
-    _totalMainSales += totalAmount;
 
-    notifyListeners();
-  }
+    _totalNewSales += totalAmount;
 
-  void clearTotalMainSales() {
-    _totalMainSales = 0.0;
     notifyListeners();
   }
 
   void confirmSales() {
     for (int i = 0; i < _newSales.length; i++) _mainSales.add(_newSales[i]);
-
+    _totalMainSales += _totalNewSales;
     _newSales.clear();
+    _totalNewSales = 0.0;
     notifyListeners();
   }
 
@@ -533,6 +532,38 @@ class SalesModel extends ChangeNotifier {
           return dataReceived;
         } else {
           throw Exception('Server error: ${dataReceived}');
+        }
+      } else {
+        throw Exception('HTTP error: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Capture the specific error message and rethrow it
+      throw Exception('Error in Connection: ${error.toString()}');
+    }
+  }
+
+  // BackUp button
+  Future<String> backupSalesData(
+      String productName, String totalAmount, String addedDate) async {
+    // Expected format: 'Y-m-d H:i:s'
+    var url = Uri.parse("http://${ip}/CashBookApp/insertDailySales.php");
+
+    try {
+      final response = await http.post(url, body: {
+        'product_name': productName,
+        'total-amount': totalAmount,
+        'added_date': addedDate,
+      });
+
+      if (response.statusCode == 200) {
+        var dataReceived = json.decode(response.body);
+
+        if (dataReceived['status'] == 'Success') {
+          _mainSales.clear();
+          notifyListeners();
+          return dataReceived;
+        } else {
+          throw Exception('Server error: ${dataReceived['message']}');
         }
       } else {
         throw Exception('HTTP error: ${response.statusCode}');

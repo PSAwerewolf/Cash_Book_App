@@ -1,3 +1,5 @@
+import 'package:cash_book_app4/main.dart';
+import 'package:cash_book_app4/model/product_sales.dart';
 import 'package:cash_book_app4/model/sales_model.dart';
 import 'package:cash_book_app4/pages/auth/login_page.dart';
 import 'package:cash_book_app4/routes/routes_helper.dart';
@@ -27,6 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     context.read<SalesModel>().fetchShopExpenseCategoryCache();
+    List<ProductSales> mainSales = context.read<SalesModel>().getMainSales;
 
     return SafeArea(
       child: Scaffold(
@@ -39,20 +42,66 @@ class _SettingsPageState extends State<SettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //Shop Name
-              Container(
-                child: BigText(
-                  text: "Axis Shop",
-                  size: Dimentions.font20 * 2,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        child: BigText(
+                          text: "Axis Shop",
+                          size: Dimentions.font20 * 2,
+                        ),
+                      ),
+                      SizedBox(height: Dimentions.height10), // Address
+                      Container(
+                        child: SmallText(
+                          text: "Address",
+                          size: Dimentions.font26,
+                        ),
+                      ),
+                    ],
+                  ),
+                  ElevatedButton(
+                    //Y-m-d H:i:s
+                    onPressed: () {
+                      mainSales.forEach((sales) {
+                        String response = context
+                                .read<SalesModel>()
+                                .backupSalesData(
+                                    sales.productName,
+                                    sales.totalAmount as String,
+                                    '${sales.addedDate.year}-${sales.addedDate.month}-${sales.addedDate.day} ${sales.addedDate.hour}:${sales.addedDate.minute}:${sales.addedDate.second}')
+                            as String;
+                        print(response);
+                      });
+                    },
+                    child: AppIcon(
+                      iconData: Icons.backup,
+                      backgroundColor: Colors.transparent,
+                      iconColor: Colors.blue,
+                      iconSize: Dimentions.iconSize16 * 2,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      // Text color
+                      shadowColor: Colors.black, // Shadow color
+                      elevation: 1, // Elevation
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(Dimentions.radius15),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          vertical: Dimentions.height10,
+                          horizontal: Dimentions.width20),
+                    ),
+                  )
+                ],
               ),
-              SizedBox(height: Dimentions.height10), // Address
-              Container(
-                child: SmallText(
-                  text: "Address",
-                  size: Dimentions.font26,
-                ),
+              SizedBox(
+                height: Dimentions.height30,
               ),
-              SizedBox(height: Dimentions.height45),
 
               //Sales Category
               GestureDetector(
@@ -98,11 +147,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                 elevation: 0.1,
                                 onPressed: () {
                                   try {
-                                    context
+                                    String response = context
                                         .watch<SalesModel>()
                                         .addOrUpdateProductItem(
                                             categoryController.text,
-                                            unitPriceController.text);
+                                            unitPriceController.text) as String;
 
                                     setState(() {
                                       successAdded = true;

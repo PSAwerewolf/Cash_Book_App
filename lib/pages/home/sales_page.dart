@@ -24,7 +24,6 @@ class _SalesPageState extends State<SalesPage> {
   Widget build(BuildContext context) {
     DateTime chartDate = DateTime.now();
     context.read<SalesModel>().fetchProductSalesCache();
-    final productSalesList = context.watch<SalesModel>().getSalesList;
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
