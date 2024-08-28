@@ -79,7 +79,8 @@ class _SalesListGridState extends State<SalesListGrid> {
       child: Column(
         children: [
           Container(
-            height: Dimentions.pageView450,
+            height: Dimentions.pageView120 * 3.5,
+            padding: EdgeInsets.all(Dimentions.width5),
             child: SfDataGrid(
               key: _key,
               allowFiltering: true,
@@ -116,7 +117,7 @@ class _SalesListGridState extends State<SalesListGrid> {
                     columnName: "total_amount",
                     allowSorting: false,
                     label: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(Dimentions.width5),
                       child: Container(
                         child: BigText(
                           text: "Amount",
@@ -159,92 +160,89 @@ class _SalesListGridState extends State<SalesListGrid> {
           SizedBox(
             height: Dimentions.height10,
           ),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                SizedBox(
-                  width: Dimentions.width20 * 5,
-                  height: Dimentions.height10 * 5,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red[100],
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(Dimentions.radius15))),
-                    onPressed: () {
-                      if (_sales.isEmpty) {
-                        CustomSnackbar(
-                          message: 'List is Empty',
-                          backgroundColor: Colors.white,
-                          textStyle: TextStyle(
-                              color: AppColors.mainColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
-                          duration: Duration(seconds: 1),
-                        ).show(context);
-                      } else {
-                        Provider.of<SalesModel>(context, listen: false)
-                            .confirmSales();
-                        try {
-                          _exportDataGridToPdf();
-                        } catch (e) {
-                          CustomSnackbar(message: "${e.toString()}")
-                              .show(context);
-                        }
-                      }
-                    },
-                    child: AppIcon(
-                      iconData: Icons.feed,
-                      backgroundColor: Colors.transparent,
-                      iconColor: Colors.red,
-                      iconSize: Dimentions.iconSize16 * 2,
+          Column(
+            children: [
+              BigText(
+                text: "Download the report",
+                size: Dimentions.font16,
+              ),
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: Dimentions.width20 * 5,
+                      height: Dimentions.height10 * 5,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      Dimentions.radius15))),
+                          onPressed: () {
+                            if (_sales.isEmpty) {
+                              CustomSnackbar(
+                                message: 'List is Empty',
+                                backgroundColor: Colors.white,
+                                textStyle: TextStyle(
+                                    color: AppColors.mainColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                                duration: Duration(seconds: 1),
+                              ).show(context);
+                            } else {
+                              Provider.of<SalesModel>(context, listen: false)
+                                  .confirmSales();
+                              try {
+                                _exportDataGridToPdf();
+                              } catch (e) {
+                                CustomSnackbar(message: "${e.toString()}")
+                                    .show(context);
+                              }
+                            }
+                          },
+                          child: Image.asset("assets/images/pdf.jpg")),
                     ),
-                  ),
+                    SizedBox(
+                      width: Dimentions.width10,
+                    ),
+                    SizedBox(
+                      height: Dimentions.height10 * 5,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    Dimentions.radius15))),
+                        onPressed: () {
+                          if (_sales.isEmpty) {
+                            CustomSnackbar(
+                              message: 'List is Empty',
+                              backgroundColor: Colors.white,
+                              textStyle: TextStyle(
+                                  color: AppColors.mainColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                              duration: Duration(seconds: 1),
+                            ).show(context);
+                          } else {
+                            Provider.of<SalesModel>(context, listen: false)
+                                .confirmSales();
+                            try {
+                              _exportDataGridToExcel();
+                            } catch (e) {
+                              CustomSnackbar(message: "${e.toString()}")
+                                  .show(context);
+                            }
+                          }
+                        },
+                        child: Image.asset("assets/images/excel.jpg"),
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: Dimentions.width10,
-                ),
-                SizedBox(
-                  width: Dimentions.width20 * 5,
-                  height: Dimentions.height10 * 5,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green[100],
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(Dimentions.radius15))),
-                    onPressed: () {
-                      if (_sales.isEmpty) {
-                        CustomSnackbar(
-                          message: 'List is Empty',
-                          backgroundColor: Colors.white,
-                          textStyle: TextStyle(
-                              color: AppColors.mainColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
-                          duration: Duration(seconds: 1),
-                        ).show(context);
-                      } else {
-                        Provider.of<SalesModel>(context, listen: false)
-                            .confirmSales();
-                        try {
-                          _exportDataGridToExcel();
-                        } catch (e) {
-                          CustomSnackbar(message: "${e.toString()}")
-                              .show(context);
-                        }
-                      }
-                    },
-                    child: AppIcon(
-                        iconData: Icons.dataset,
-                        backgroundColor: Colors.transparent,
-                        iconColor: Colors.green,
-                        iconSize: Dimentions.iconSize16 * 2),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           )
         ],
       ),

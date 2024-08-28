@@ -74,17 +74,14 @@ class _AddSalesState extends State<AddSales> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     NumButtonWidget(
-                        backgroundColor: AppColors.buttonBackgroundColor,
                         numValue: '1',
                         priceController: _priceController,
                         child: BigText(text: '1')),
                     NumButtonWidget(
-                        backgroundColor: AppColors.buttonBackgroundColor,
                         numValue: '2',
                         priceController: _priceController,
                         child: BigText(text: '2')),
                     NumButtonWidget(
-                        backgroundColor: AppColors.buttonBackgroundColor,
                         numValue: '3',
                         priceController: _priceController,
                         child: BigText(text: '3')),
@@ -97,17 +94,14 @@ class _AddSalesState extends State<AddSales> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     NumButtonWidget(
-                        backgroundColor: AppColors.buttonBackgroundColor,
                         numValue: '4',
                         priceController: _priceController,
                         child: BigText(text: '4')),
                     NumButtonWidget(
-                        backgroundColor: AppColors.buttonBackgroundColor,
                         numValue: '5',
                         priceController: _priceController,
                         child: BigText(text: '5')),
                     NumButtonWidget(
-                        backgroundColor: AppColors.buttonBackgroundColor,
                         numValue: '6',
                         priceController: _priceController,
                         child: BigText(text: '6')),
@@ -120,17 +114,14 @@ class _AddSalesState extends State<AddSales> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     NumButtonWidget(
-                        backgroundColor: AppColors.buttonBackgroundColor,
                         numValue: '7',
                         priceController: _priceController,
                         child: BigText(text: '7')),
                     NumButtonWidget(
-                        backgroundColor: AppColors.buttonBackgroundColor,
                         numValue: '8',
                         priceController: _priceController,
                         child: BigText(text: '8')),
                     NumButtonWidget(
-                        backgroundColor: AppColors.buttonBackgroundColor,
                         numValue: '9',
                         priceController: _priceController,
                         child: BigText(text: '9')),
@@ -143,22 +134,19 @@ class _AddSalesState extends State<AddSales> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     NumButtonWidget(
-                        backgroundColor: AppColors.buttonBackgroundColor,
                         numValue: '.',
                         priceController: _priceController,
                         child: BigText(text: '.')),
                     NumButtonWidget(
-                        backgroundColor: AppColors.buttonBackgroundColor,
                         numValue: '0',
                         priceController: _priceController,
                         child: BigText(text: '0')),
                     NumButtonWidget(
-                      backgroundColor: AppColors.paraColor,
                       numValue: '',
                       priceController: _priceController,
                       child: AppIcon(
                         iconData: Icons.backspace,
-                        iconColor: Colors.white,
+                        iconColor: Colors.red,
                         backgroundColor: Colors.transparent,
                       ),
                     )
@@ -172,7 +160,7 @@ class _AddSalesState extends State<AddSales> {
                   children: [
                     SizedBox(
                       height: Dimentions.height10 * 5,
-                      width: Dimentions.width30 * 4,
+                      width: Dimentions.width30 * 6,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
@@ -197,29 +185,7 @@ class _AddSalesState extends State<AddSales> {
                             });
                           },
                           child: BigText(
-                            text: "Add",
-                            color: Colors.white,
-                          )),
-                    ),
-                    SizedBox(
-                      height: Dimentions.height10,
-                    ),
-                    SizedBox(
-                      height: Dimentions.height10 * 5,
-                      width: Dimentions.width30 * 4,
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      Dimentions.radius15)),
-                              backgroundColor: Colors.green[700],
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(
-                                vertical: Dimentions.height10,
-                              )),
-                          onPressed: () {},
-                          child: BigText(
-                            text: "Print",
+                            text: "Submit",
                             color: Colors.white,
                           )),
                     ),

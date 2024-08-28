@@ -74,24 +74,17 @@ class _LoginPageState extends State<LoginPage> {
                 vertical: Dimentions.height10, horizontal: Dimentions.width20),
             child: Column(
               children: [
+                SizedBox(
+                  height: Dimentions.height30,
+                ),
                 Container(
                   height: Dimentions.height45 * 5,
                   width: Dimentions.height45 * 5,
                   decoration: BoxDecoration(color: Colors.transparent),
                   child: Image.asset(
-                    "assets/images/cashBookLogo.png",
+                    "assets/images/cashBookLogo.jpg",
                     fit: BoxFit.cover,
                   ),
-                ),
-                BigText(
-                  text: "Cash BOOK",
-                  color: AppColors.mainColor,
-                  size: 40,
-                ),
-                SmallText(
-                  text: "Simplified Cash Entry & Tracking App",
-                  color: AppColors.paraColor,
-                  size: 16,
                 ),
                 SizedBox(
                   height: Dimentions.height30,
@@ -100,7 +93,8 @@ class _LoginPageState extends State<LoginPage> {
                     preIcon: AppIcon(
                       iconData: Icons.other_houses_rounded,
                       backgroundColor: Colors.transparent,
-                      iconColor: AppColors.mainColor,
+                      iconColor: Colors.black,
+                      iconSize: Dimentions.iconSize24,
                     ),
                     placeHolder: 'Enter Shop Id',
                     controller: _shopIdController),
@@ -108,14 +102,20 @@ class _LoginPageState extends State<LoginPage> {
                     preIcon: AppIcon(
                       iconData: Icons.person,
                       backgroundColor: Colors.transparent,
-                      iconColor: AppColors.mainColor,
+                      iconColor: Colors.black,
+                      iconSize: Dimentions.iconSize24,
                     ),
                     placeHolder: 'Enter User Id',
                     controller: _userIdController),
                 PasswordTextField(
                   controller: _passwordIdController,
                   placeHolder: 'Enter Password',
-                  prefIcon: Icons.lock,
+                  prefIcon: AppIcon(
+                    iconData: Icons.lock,
+                    backgroundColor: Colors.transparent,
+                    iconColor: Colors.black,
+                    iconSize: Dimentions.iconSize24,
+                  ),
                   mainBorderColor: AppColors.mainColor,
                   errorBorderColor: Colors.red,
                 ),
@@ -162,6 +162,8 @@ class _LoginPageState extends State<LoginPage> {
                         context.read<SalesModel>().fetchShopExpense();
                         context.read<SalesModel>().fetchProductItems();
                         context.read<SalesModel>().fetchShopExpenseCategory();
+                        context.read<SalesModel>().fetchProductSalesCache();
+                        context.read<SalesModel>().fetchShopExpenseCache();
                         Get.toNamed(RoutesHelper.getHomePage());
                         CustomSnackbar(
                           message: '${loginStatus['status']}',
@@ -184,23 +186,23 @@ class _LoginPageState extends State<LoginPage> {
                         duration: Duration(seconds: 2),
                       ).show(context);
                     }
-
+                    Get.toNamed(RoutesHelper.getHomePage());
                     _shopIdController.clear();
                     _userIdController.clear();
                     _passwordIdController.clear();
                   },
                   child: Container(
-                    width: Dimentions.screenWidth / 2,
+                    width: Dimentions.screenWidth,
                     padding: EdgeInsets.symmetric(
                         vertical: Dimentions.height10 / 2,
                         horizontal: Dimentions.width20),
                     decoration: BoxDecoration(
-                        color: AppColors.mainColor,
+                        color: Colors.green,
                         borderRadius:
                             BorderRadius.circular(Dimentions.radius20)),
                     child: Center(
                       child: BigText(
-                        text: "Sign in",
+                        text: "Log in",
                         color: Colors.white,
                         size: Dimentions.font26,
                       ),

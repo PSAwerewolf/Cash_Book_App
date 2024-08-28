@@ -19,6 +19,22 @@ class SalesReport extends StatefulWidget {
 }
 
 class _SalesReportState extends State<SalesReport> {
+  final GlobalKey<DropdownMenuWidgetState> dropDownKey =
+      GlobalKey<DropdownMenuWidgetState>();
+
+  String? selectedValue;
+  @override
+  void initState() {
+    selectedValue = dropDownKey.currentState?.getSelectedDate();
+    super.initState();
+  }
+
+  void _updateSelectedValue(String value) {
+    setState(() {
+      selectedValue = value; // Update the selected value
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -31,11 +47,16 @@ class _SalesReportState extends State<SalesReport> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              DropdownMenuWidget(),
-              BigText(text: "Date"),
+              BigText(text: "Sales Report"),
+              DropdownMenuWidget(
+                key: dropDownKey,
+                onValueChanged: _updateSelectedValue,
+              ),
               Container(
                 //color: Colors.red,
-                child: SalesReportGrid(),
+                child: SalesReportGrid(
+                  selectedValue: selectedValue,
+                ),
               ),
             ],
           ),

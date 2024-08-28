@@ -25,25 +25,25 @@ class _HomePageState extends State<HomePage> {
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.money_dollar),
-        title: ("Sales"),
-        activeColorPrimary: AppColors.mainColor,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(
-          CupertinoIcons.home,
-          color: Colors.white,
+        icon: Image.asset(
+          "assets/images/expense.png", // Path to your image asset
+          width: 50, // Width of the image
+          height: 50, // Height of the image
         ),
-        title: ("Dash Board"),
-        activeColorPrimary: AppColors.mainColor,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.settings),
-        title: ("Settings"),
-        activeColorPrimary: AppColors.mainColor,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
+        icon: Image.asset(
+          "assets/images/revenue.png",
+          width: 50, // Width of the image
+          height: 50, // Path to your image asset
+        ),
+      ),
+      PersistentBottomNavBarItem(
+        icon: Image.asset(
+          "assets/images/personSettings.png", // Path to your image asset
+          width: 50, // Width of the image
+          height: 50, // Height of the image
+        ),
       ),
     ];
   }
@@ -60,10 +60,14 @@ class _HomePageState extends State<HomePage> {
       context,
       controller: _controller,
       navBarHeight: Dimentions.height30 * 2.5,
+      margin: EdgeInsets.only(
+          left: Dimentions.width5,
+          right: Dimentions.width5,
+          bottom: Dimentions.width5),
       screens: _buildScreens(),
       items: _navBarsItems(),
       confineInSafeArea: true,
-      backgroundColor: Colors.white, // Default is Colors.white.
+      backgroundColor: AppColors.mainColor, // Default is Colors.white.
       handleAndroidBackButtonPress: true, // Default is true.
       resizeToAvoidBottomInset:
           true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
@@ -88,7 +92,7 @@ class _HomePageState extends State<HomePage> {
         duration: Duration(milliseconds: 200),
       ),
       navBarStyle:
-          NavBarStyle.style15, // Choose the nav bar style with this property.
+          NavBarStyle.style6, // Choose the nav bar style with this property.
     );
   }
 }

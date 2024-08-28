@@ -1,6 +1,7 @@
 import 'package:cash_book_app4/main.dart';
 import 'package:cash_book_app4/model/product_sales.dart';
 import 'package:cash_book_app4/model/sales_model.dart';
+import 'package:cash_book_app4/model/shop_expense.dart';
 import 'package:cash_book_app4/pages/auth/login_page.dart';
 import 'package:cash_book_app4/routes/routes_helper.dart';
 import 'package:cash_book_app4/utils/app_icon.dart';
@@ -14,6 +15,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+
+import '../../utils/custom_snackbar.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -30,6 +33,8 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     context.read<SalesModel>().fetchShopExpenseCategoryCache();
     List<ProductSales> mainSales = context.read<SalesModel>().getMainSales;
+    List<ShopExpense> mainExpense = context.read<SalesModel>().getMainExpense;
+    int userId = context.read<SalesModel>().getUserId;
 
     return SafeArea(
       child: Scaffold(
@@ -63,19 +68,50 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ],
                   ),
+
+                  // Backup Button
                   ElevatedButton(
                     //Y-m-d H:i:s
                     onPressed: () {
-                      mainSales.forEach((sales) {
-                        String response = context
-                                .read<SalesModel>()
-                                .backupSalesData(
-                                    sales.productName,
-                                    sales.totalAmount as String,
-                                    '${sales.addedDate.year}-${sales.addedDate.month}-${sales.addedDate.day} ${sales.addedDate.hour}:${sales.addedDate.minute}:${sales.addedDate.second}')
-                            as String;
+                      String response = "";
+                      mainSales.forEach((sales) async {
+                        response = await context.read<SalesModel>().backupSalesData(
+                            sales.productName,
+                            sales.totalAmount,
+                            '${sales.addedDate.year}-${sales.addedDate.month}-${sales.addedDate.day} ${sales.addedDate.hour}:${sales.addedDate.minute}:${sales.addedDate.second}');
                         print(response);
                       });
+                      if (response == "Success") {
+                        CustomSnackbar(
+                          message: 'Data BackedUp Successfully',
+                          textStyle: TextStyle(
+                              color: AppColors.mainColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                          duration: Duration(seconds: 2),
+                        ).show(context);
+                      }
+                      String responseExpense = " ";
+                      mainExpense.forEach((expense) async {
+                        responseExpense = await context
+                            .read<SalesModel>()
+                            .backupExpenseData(
+                                expense.expenseDescription,
+                                expense.totalAmount,
+                                '${expense.addedDate.year}-${expense.addedDate.month}-${expense.addedDate.day} ${expense.addedDate.hour}:${expense.addedDate.minute}:${expense.addedDate.second}',
+                                userId);
+                        print(response);
+                      });
+                      if (responseExpense == "Success") {
+                        CustomSnackbar(
+                          message: 'Data BackedUp Successfully',
+                          textStyle: TextStyle(
+                              color: AppColors.mainColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                          duration: Duration(seconds: 2),
+                        ).show(context);
+                      }
                     },
                     child: AppIcon(
                       iconData: Icons.backup,
@@ -459,6 +495,21 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
               ),
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed(RoutesHelper.getExpensePage());
+                },
+                child: Row(
+                  children: [
+                    AppIcon(
+                        iconData: Icons.file_copy_outlined,
+                        iconColor: AppColors.mainColor,
+                        backgroundColor: Colors.white),
+                    SizedBox(width: Dimentions.width10),
+                    BigText(text: "Page - Expenses")
+                  ],
+                ),
+              ),
               const Spacer(),
 
               //Store Settings
@@ -675,7 +726,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                   context.read<SalesModel>().clearUserData();
-                                  //Get.toNamed(RoutesHelper.getLoginPage());
+                                  context.read<SalesModel>().clearAll();
+                                  context
+                                      .read<SalesModel>()
+                                      .clearSharedPreferences();
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(

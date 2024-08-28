@@ -1,5 +1,6 @@
 import 'package:cash_book_app4/model/product_sales.dart';
 import 'package:cash_book_app4/model/sales_model.dart';
+import 'package:cash_book_app4/model/shop_expense.dart';
 import 'package:cash_book_app4/widgets/big_text.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -9,6 +10,7 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 import 'package:provider/provider.dart';
 
 // Local import
+import '../pages/Report/expense_report.dart';
 import '../utils/app_icon.dart';
 import '../pages/helper/save_file_mobile.dart'
     if (dart.library.html) 'helper/save_file_web.dart' as helper;
@@ -16,22 +18,25 @@ import '../pages/helper/save_file_mobile.dart'
 import '../utils/appcolors.dart';
 import '../utils/custom_snackbar.dart';
 import '../utils/dimentions.dart';
+import '../utils/dropdownmenu_widget.dart';
 
-class SalesReportGrid extends StatefulWidget {
+class ExpenseReportGrid extends StatefulWidget {
   String? selectedValue;
-  SalesReportGrid({super.key, this.selectedValue});
+
+  ExpenseReportGrid({super.key, this.selectedValue = '-1'});
 
   @override
-  State<SalesReportGrid> createState() => _SalesReportGridState();
+  State<ExpenseReportGrid> createState() => _ExpenseReportGridState();
 }
 
-class _SalesReportGridState extends State<SalesReportGrid> {
-  late List<ProductSales> _sales = [];
+class _ExpenseReportGridState extends State<ExpenseReportGrid> {
+  late List<ShopExpense> _sales = [];
   late SalesDataSource _salesDataSource;
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
+
   Future<void> _exportDataGridToExcel() async {
-    String fileName = 'DataGrid.xlsx';
+    String fileName = 'DataGridExpense.xlsx';
     final SfDataGridState? dataGridState = _key.currentState;
 
     if (dataGridState != null) {
@@ -47,7 +52,7 @@ class _SalesReportGridState extends State<SalesReportGrid> {
   }
 
   Future<void> _exportDataGridToPdf() async {
-    String fileName = 'DataGrid.pdf';
+    String fileName = 'DataGridExpense.pdf';
     final SfDataGridState? dataGridState = _key.currentState;
 
     if (dataGridState != null) {
@@ -64,22 +69,21 @@ class _SalesReportGridState extends State<SalesReportGrid> {
 
   @override
   void initState() {
-    _salesDataSource = SalesDataSource(_sales, context);
+    _salesDataSource = SalesDataSource(_sales);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    context.watch<SalesModel>().getTotalSales();
-    double totalAmount = context.read<SalesModel>().getTotalAmount;
-
+    context.watch<SalesModel>().getTotalExpense();
+    double totalExpense = context.watch<SalesModel>().getTotalExpenseAmount;
     if (widget.selectedValue != null) {
-      _sales = context.read<SalesModel>().sortSalesData(widget.selectedValue);
+      _sales = context.read<SalesModel>().sortExpenseData(widget.selectedValue);
     } else {
-      _sales = context.watch<SalesModel>().getSalesList;
+      _sales = context.watch<SalesModel>().expenseList;
     }
 
-    _salesDataSource = SalesDataSource(_sales, context);
+    _salesDataSource = SalesDataSource(_sales);
     return Container(
       child: Column(
         children: [
@@ -98,7 +102,7 @@ class _SalesReportGridState extends State<SalesReportGrid> {
                 GridColumn(
                     columnName: "added_date",
                     label: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(Dimentions.width10),
                       child: Container(
                         child: BigText(
                           text: "Date",
@@ -107,19 +111,18 @@ class _SalesReportGridState extends State<SalesReportGrid> {
                       ),
                     )),
                 GridColumn(
-                    columnName: "product_name",
+                    columnName: "Expense_desc",
                     label: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
                         child: BigText(
-                          text: "Product Name",
+                          text: "Expense Name",
                           size: 12,
                         ),
                       ),
                     )),
                 GridColumn(
                     columnName: "total_amount",
-                    allowSorting: false,
                     label: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -143,10 +146,10 @@ class _SalesReportGridState extends State<SalesReportGrid> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   BigText(
-                    text: "Total Amount : ",
+                    text: "Total Amount :",
                   ),
                   BigText(
-                    text: "Rs. ${totalAmount.toStringAsFixed(2)}",
+                    text: "Rs. ${totalExpense.toStringAsFixed(2)}",
                   ),
                 ]),
             decoration: BoxDecoration(
@@ -240,10 +243,7 @@ class _SalesReportGridState extends State<SalesReportGrid> {
 }
 
 class SalesDataSource extends DataGridSource {
-  BuildContext? context;
-  List<ProductSales> sales;
-
-  SalesDataSource(this.sales, this.context) {
+  SalesDataSource(List<ShopExpense> sales) {
     dataGridRows = sales
         .map<DataGridRow>((dataGridRow) => DataGridRow(cells: [
               DataGridCell<String>(
@@ -251,7 +251,8 @@ class SalesDataSource extends DataGridSource {
                   value:
                       '${dataGridRow.addedDate.day.toString()} - ${dataGridRow.addedDate.month.toString()} - ${dataGridRow.addedDate.year.toString()}'),
               DataGridCell<String>(
-                  columnName: "product_name", value: dataGridRow.productName),
+                  columnName: "Expense_desc",
+                  value: dataGridRow.expenseDescription),
               DataGridCell<double>(
                   columnName: "total_amount", value: dataGridRow.totalAmount),
             ]))
@@ -264,22 +265,13 @@ class SalesDataSource extends DataGridSource {
 
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
-    return DataGridRowAdapter(cells: [
-      Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.all(8.0),
-        child: Text(row.getCells()[0].value.toString()),
-      ),
-      Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.all(8.0),
-        child: Text(row.getCells()[1].value.toString()),
-      ),
-      Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.all(8.0),
-        child: Text(row.getCells()[2].value.toString()),
-      ),
-    ]);
+    return DataGridRowAdapter(
+        cells: row.getCells().map<Widget>((dataGridCell) {
+      return Container(
+        padding: EdgeInsets.only(left: Dimentions.height20),
+        alignment: Alignment.centerLeft,
+        child: Text(dataGridCell.value.toString()),
+      );
+    }).toList());
   }
 }

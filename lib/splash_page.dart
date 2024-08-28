@@ -18,7 +18,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
-    Timer(const Duration(seconds: 3),
+    Timer(const Duration(seconds: 10),
         () => Get.toNamed(RoutesHelper.getLoginPage()));
     super.initState();
   }
@@ -32,36 +32,10 @@ class _SplashPageState extends State<SplashPage> {
             height: MediaQuery.of(context).size.height,
             width: double.infinity,
             decoration: BoxDecoration(),
-            child: Opacity(
-              opacity: 0.2,
-              child: Image.asset(
-                "assets/images/cashBookBg.jpg",
-                fit: BoxFit.cover,
-              ),
+            child: Image.asset(
+              "assets/images/cashBookBg.jpg",
+              fit: BoxFit.cover,
             ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                child: Image.asset("assets/images/cashBookLogo.png"),
-              ),
-              BigText(
-                text: "Cash BOOK",
-                color: AppColors.mainColor,
-                size: 40,
-              ),
-              SmallText(
-                text: "Simplified Cash Entry & Tracking App",
-                color: AppColors.paraColor,
-                size: 16,
-              ),
-              Spacer(),
-              CircularProgressIndicator(
-                color: AppColors.mainColor,
-              ),
-              Spacer(),
-            ],
           ),
         ],
       ),

@@ -14,6 +14,8 @@ import '../utils/app_icon.dart';
 import '../pages/helper/save_file_mobile.dart'
     if (dart.library.html) 'helper/save_file_web.dart' as helper;
 
+import '../utils/appcolors.dart';
+import '../utils/custom_snackbar.dart';
 import '../utils/dimentions.dart';
 
 class ExpenseListGrid extends StatefulWidget {
@@ -29,7 +31,7 @@ class _ExpenseListGridState extends State<ExpenseListGrid> {
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
   Future<void> _exportDataGridToExcel() async {
-    String fileName = 'DataGrid.xlsx';
+    String fileName = 'DataGridExpense.xlsx';
     final SfDataGridState? dataGridState = _key.currentState;
 
     if (dataGridState != null) {
@@ -45,7 +47,7 @@ class _ExpenseListGridState extends State<ExpenseListGrid> {
   }
 
   Future<void> _exportDataGridToPdf() async {
-    String fileName = 'DataGrid.pdf';
+    String fileName = 'DataGridExpense.pdf';
     final SfDataGridState? dataGridState = _key.currentState;
 
     if (dataGridState != null) {
@@ -68,10 +70,9 @@ class _ExpenseListGridState extends State<ExpenseListGrid> {
 
   @override
   Widget build(BuildContext context) {
-    context.read<SalesModel>().fetchShopExpenseCache();
-    final shopExpenseList = context.watch<SalesModel>().expenseList;
+    final shopExpenseList = context.watch<SalesModel>().getNewExpense;
     context.watch<SalesModel>().getTotalExpense();
-    double totalExpense = context.watch<SalesModel>().getExpenseTotalAmount;
+    double totalExpense = context.watch<SalesModel>().getTotalNewExpense;
     _sales = shopExpenseList;
     _salesDataSource = SalesDataSource(_sales);
     return Container(
@@ -155,41 +156,72 @@ class _ExpenseListGridState extends State<ExpenseListGrid> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: Dimentions.width20 * 5,
                   height: Dimentions.height10 * 5,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red[100],
+                        backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(Dimentions.radius15))),
-                    onPressed: _exportDataGridToPdf,
-                    child: AppIcon(
-                      iconData: Icons.adobe,
-                      backgroundColor: Colors.transparent,
-                      iconColor: Colors.red,
-                      iconSize: Dimentions.iconSize16 * 2,
-                    ),
+                    onPressed: () {
+                      if (_sales.isEmpty) {
+                        CustomSnackbar(
+                          message: 'List is Empty',
+                          backgroundColor: Colors.white,
+                          textStyle: TextStyle(
+                              color: AppColors.mainColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                          duration: Duration(seconds: 1),
+                        ).show(context);
+                      } else {
+                        Provider.of<SalesModel>(context, listen: false)
+                            .confirmExpense();
+                        try {
+                          _exportDataGridToPdf();
+                        } catch (e) {
+                          CustomSnackbar(message: "${e.toString()}")
+                              .show(context);
+                        }
+                      }
+                    },
+                    child: Image.asset("assets/images/pdf.jpg"),
                   ),
                 ),
                 SizedBox(
                   width: Dimentions.width10,
                 ),
                 SizedBox(
-                  width: Dimentions.width20 * 5,
                   height: Dimentions.height10 * 5,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green[100],
+                        backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(Dimentions.radius15))),
-                    onPressed: _exportDataGridToExcel,
-                    child: AppIcon(
-                        iconData: Icons.currency_exchange,
-                        backgroundColor: Colors.transparent,
-                        iconColor: Colors.green,
-                        iconSize: Dimentions.iconSize16 * 2),
+                    onPressed: () {
+                      if (_sales.isEmpty) {
+                        CustomSnackbar(
+                          message: 'List is Empty',
+                          backgroundColor: Colors.white,
+                          textStyle: TextStyle(
+                              color: AppColors.mainColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                          duration: Duration(seconds: 1),
+                        ).show(context);
+                      } else {
+                        Provider.of<SalesModel>(context, listen: false)
+                            .confirmExpense();
+                        try {
+                          _exportDataGridToExcel();
+                        } catch (e) {
+                          CustomSnackbar(message: "${e.toString()}")
+                              .show(context);
+                        }
+                      }
+                    },
+                    child: Image.asset("assets/images/excel.jpg"),
                   ),
                 ),
               ],

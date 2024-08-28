@@ -20,7 +20,7 @@ class PasswordTextField extends StatefulWidget {
 
   IconData suffIconTrue;
   IconData suffIconFalse;
-  IconData prefIcon;
+  AppIcon prefIcon;
 
   PasswordTextField(
       {super.key,
@@ -32,7 +32,7 @@ class PasswordTextField extends StatefulWidget {
       this.suffIconTrueColor = Colors.blue,
       this.mainBorderColor = Colors.blue,
       this.errorBorderColor = Colors.red,
-      this.prefIcon = Icons.add});
+      required this.prefIcon});
 
   @override
   State<PasswordTextField> createState() => _PasswordTextFieldState();
@@ -93,11 +93,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(Dimentions.height20),
                 borderSide: BorderSide(width: 1.0, color: Colors.white)),
-            prefixIcon: AppIcon(
-              iconData: widget.prefIcon,
-              iconColor: AppColors.mainColor,
-              backgroundColor: Colors.transparent,
-            ),
+            prefixIcon: widget.prefIcon,
             suffixIcon: IconButton(
                 onPressed: () {
                   setState(() {

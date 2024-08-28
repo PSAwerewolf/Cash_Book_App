@@ -1,3 +1,5 @@
+import 'package:cash_book_app4/list_grids/expense_list_grid.dart';
+import 'package:cash_book_app4/widgets/add_expense.dart';
 import 'package:cash_book_app4/widgets/add_sales.dart';
 import 'package:cash_book_app4/list_grids/sales_list_grid.dart';
 import 'package:cash_book_app4/utils/dimentions.dart';
@@ -12,14 +14,14 @@ import '../../utils/app_icon.dart';
 import '../../utils/appcolors.dart';
 import '../../utils/text_field.dart';
 
-class SalesPage extends StatefulWidget {
-  const SalesPage({super.key});
+class ExpensePage extends StatefulWidget {
+  const ExpensePage({super.key});
 
   @override
-  State<SalesPage> createState() => _SalesPageState();
+  State<ExpensePage> createState() => _ExpensePageState();
 }
 
-class _SalesPageState extends State<SalesPage> {
+class _ExpensePageState extends State<ExpensePage> {
   String getDay(int day) {
     String dayString = " ";
     switch (day) {
@@ -66,7 +68,7 @@ class _SalesPageState extends State<SalesPage> {
                       builder: (context) =>
                           AlertDialog(content: StatefulBuilder(
                         builder: (context, setstate) {
-                          return AddSales();
+                          return AddExpense();
                         },
                       )),
                     );
@@ -76,11 +78,11 @@ class _SalesPageState extends State<SalesPage> {
                         vertical: Dimentions.height10,
                         horizontal: Dimentions.width20),
                     child: BigText(
-                      text: "New Sales",
+                      text: "New Expense",
                       color: Colors.white,
                     ),
                     decoration: BoxDecoration(
-                        color: Colors.green,
+                        color: Colors.red,
                         borderRadius:
                             BorderRadius.circular(Dimentions.radius15)),
                   ),
@@ -96,7 +98,7 @@ class _SalesPageState extends State<SalesPage> {
                 SizedBox(
                   height: Dimentions.height20,
                 ),
-                Container(child: SalesListGrid()),
+                Container(child: ExpenseListGrid()),
               ],
             ),
           ),

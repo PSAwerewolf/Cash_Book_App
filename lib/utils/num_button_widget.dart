@@ -13,7 +13,7 @@ class NumButtonWidget extends StatefulWidget {
   String numValue;
   NumButtonWidget(
       {super.key,
-      this.backgroundColor,
+      this.backgroundColor = Colors.white,
       this.forgroundColor,
       this.child,
       required this.numValue,
@@ -44,7 +44,11 @@ class _NumButtonWidgetState extends State<NumButtonWidget> {
             ? Colors.blue
             : widget.backgroundColor, // Text color
         shadowColor: Colors.black, // Shadow color
-        elevation: 5, // Elevation
+        elevation: 5,
+        side: BorderSide(
+          color: Colors.brown, // Border color
+          width: 2.0, // Border width
+        ), // Elevation
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimentions.radius15),
         ),

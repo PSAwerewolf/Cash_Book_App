@@ -31,7 +31,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
         FlSpot(0, 50000),
         FlSpot(1, 60000),
         FlSpot(2, 95000),
-        FlSpot(3, 25000),
+        FlSpot(3, 85000),
         FlSpot(4, 10000),
         FlSpot(5, 30000),
         FlSpot(6, 70000),

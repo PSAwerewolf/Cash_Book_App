@@ -11,8 +11,13 @@ class DropdownMenuWidget extends StatefulWidget {
   List<ExpenseCategory>? expenseCategory = [];
   List<ProductItems>? itemList = [];
   bool? searchOption;
+  final Function(String)? onValueChanged;
   DropdownMenuWidget(
-      {super.key, this.itemList, this.searchOption, this.expenseCategory});
+      {super.key,
+      this.itemList,
+      this.searchOption,
+      this.expenseCategory,
+      this.onValueChanged});
 
   @override
   State<DropdownMenuWidget> createState() => DropdownMenuWidgetState();
@@ -23,8 +28,8 @@ class DropdownMenuWidgetState extends State<DropdownMenuWidget> {
 
   @override
   void initState() {
+    _selectedValue = '0';
     _initializeItemList();
-    getSelectedValue();
     super.initState();
   }
 
@@ -32,6 +37,10 @@ class DropdownMenuWidgetState extends State<DropdownMenuWidget> {
     var index = widget.itemList
         ?.indexWhere((entry) => entry.id == int.parse(_selectedValue!));
     return _selectedValue == '0' ? 00.00 : widget.itemList?[index!].unitPrice;
+  }
+
+  String? getSelectedDate() {
+    return _selectedValue;
   }
 
   int? getSelectedValueId() {
@@ -46,6 +55,14 @@ class DropdownMenuWidgetState extends State<DropdownMenuWidget> {
     return _selectedValue == '0'
         ? "Sales"
         : widget.itemList?[index!].productName;
+  }
+
+  String? getSelectedValueExpenseDesc() {
+    var index = widget.expenseCategory
+        ?.indexWhere((entry) => entry.id == int.parse(_selectedValue!));
+    return _selectedValue == '0'
+        ? "Expense"
+        : widget.expenseCategory?[index!].expenseCategory;
   }
 
   List<DropdownMenuEntry<dynamic>> defaultList = [
@@ -93,6 +110,7 @@ class DropdownMenuWidgetState extends State<DropdownMenuWidget> {
         if (value != null) {
           setState(() {
             _selectedValue = value;
+            widget.onValueChanged?.call(_selectedValue!);
           });
         }
       },

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:cash_book_app4/model/expense_category.dart';
 import 'package:cash_book_app4/model/product_items.dart';
 import 'package:cash_book_app4/model/product_sales.dart';
@@ -96,26 +97,13 @@ class SalesModel extends ChangeNotifier {
   }
 
   Future<double> getTotalSalesAmount() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cachedData = prefs.getString('cachedSales');
-
-    if (cachedData != null) {
-      final List<dynamic> responseData = json.decode(cachedData);
-
-      // Parse the data into ProductSales objects
-      final List<ProductSales> sales = responseData
-          .map((productData) => ProductSales(
-              id: int.parse(productData['id']),
-              productName: productData['product_name'],
-              totalAmount: double.parse(productData['total_price']),
-              addedDate: DateTime.parse(productData['added_date'])))
-          .toList();
-
+    try {
       // Calculate the total sales amount
-      double totalAmount = sales.fold(0, (sum, sale) => sum + sale.totalAmount);
+      double totalAmount =
+          _sales.fold(0, (sum, sale) => sum + sale.totalAmount);
 
       return totalAmount;
-    } else {
+    } catch (e) {
       throw Exception('No cached sales data available');
     }
   }
@@ -124,20 +112,117 @@ class SalesModel extends ChangeNotifier {
 
   double get getTotalAmount => _totalAmount;
 
-  void getTotal() async {
+  Future<void> getTotalSales() async {
     try {
-      double totalAmount = await getTotalSalesAmount();
-      _totalAmount = totalAmount;
+      _totalAmount = await getTotalSalesAmount();
       notifyListeners();
     } catch (e) {
       notifyListeners();
     }
   }
 
+  Future<void> clearSales() async {
+    _sales.clear();
+    notifyListeners();
+  }
+
+  // Sort Sales Data using the Date
+
+  List<ProductSales> sortSalesData(String? timeFrame) {
+    try {
+      DateTime now = DateTime.now();
+      DateTime startDate;
+
+      switch (timeFrame) {
+        case '0':
+          startDate = DateTime(now.year, now.month, now.day);
+          break;
+        case '1':
+          startDate = DateTime(now.year, now.month, now.day - 1);
+          break;
+        case '2':
+          startDate = now.subtract(Duration(days: 7));
+          break;
+        case '3':
+          startDate = DateTime(now.year, now.month - 1, 0);
+          break;
+        case '4':
+          startDate = DateTime(now.year - 1, 0, 0);
+          break;
+        default:
+          throw ArgumentError('Invalid time frame: $timeFrame');
+      }
+      List<ProductSales> filteredData;
+
+      if (timeFrame == '1') {
+        filteredData = _sales.where((data) {
+          return data.addedDate.isAfter(startDate);
+        }).toList();
+      } else {
+        filteredData = _sales.where((data) {
+          return data.addedDate.isAfter(startDate);
+        }).toList();
+      }
+
+      filteredData
+          .sort((a, b) => a.addedDate.compareTo(b.addedDate)); // Sort by date
+
+      return filteredData;
+    } catch (e) {
+      print('An error occurred: $e');
+      return []; // Return an empty list in case of an error
+    }
+  }
+
+  List<ShopExpense> sortExpenseData(String? timeFrame) {
+    try {
+      DateTime now = DateTime.now();
+      DateTime startDate;
+
+      switch (timeFrame) {
+        case '0':
+          startDate = DateTime(now.year, now.month, now.day);
+          break;
+        case '1':
+          startDate = DateTime(now.year, now.month, now.day - 1);
+          break;
+        case '2':
+          startDate = now.subtract(Duration(days: 7));
+          break;
+        case '3':
+          startDate = DateTime(now.year, now.month - 1, 0);
+          break;
+        case '4':
+          startDate = DateTime(now.year - 1, 0, 0);
+          break;
+        default:
+          throw ArgumentError('Invalid time frame: $timeFrame');
+      }
+      List<ShopExpense> filteredData;
+
+      if (timeFrame == '1' || timeFrame == '0') {
+        filteredData = _expense.where((data) {
+          return data.addedDate == startDate;
+        }).toList();
+      } else {
+        filteredData = _expense.where((data) {
+          return data.addedDate.isAfter(startDate);
+        }).toList();
+      }
+
+      filteredData
+          .sort((a, b) => a.addedDate.compareTo(b.addedDate)); // Sort by date
+
+      return filteredData;
+    } catch (e) {
+      print('An error occurred: $e');
+      return []; // Return an empty list in case of an error
+    }
+  }
+
   //Expense List
 
   List<ShopExpense> _expense = [];
-
   List<ShopExpense> get expenseList => _expense;
 
   /*Future<void> fetchShopExpense() async {
@@ -217,44 +302,68 @@ class SalesModel extends ChangeNotifier {
     }
   }
 
-  Future<double> getTotalExpenseAmount() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cachedData = prefs.getString('cachedExpenses');
-
-    if (cachedData != null) {
-      final List<dynamic> responseData = json.decode(cachedData);
-
-      // Parse the data into ProductSales objects
-      final List<ShopExpense> expense = responseData
-          .map((expenseData) => ShopExpense(
-              expenseDescription: expenseData['expense_desc'],
-              totalAmount: double.parse(expenseData['total_amount']),
-              addedDate: DateTime.parse(expenseData['added_date']),
-              userId: int.parse(expenseData['user_id'])))
-          .toList();
-
+  Future<double> getTotalExpenseValue() async {
+    try {
       // Calculate the total sales amount
       double totalAmount =
-          expense.fold(0, (sum, sale) => sum + sale.totalAmount);
+          _expense.fold(0, (sum, expense) => sum + expense.totalAmount);
 
       return totalAmount;
-    } else {
-      throw Exception('No cached sales data available');
+    } catch (e) {
+      throw Exception('No cached Expense data available');
     }
   }
 
   double _totalExpenseAmount = 0.0;
 
-  double get getExpenseTotalAmount => _totalExpenseAmount;
+  double get getTotalExpenseAmount => _totalExpenseAmount;
 
-  void getTotalExpense() async {
+  Future<void> getTotalExpense() async {
     try {
-      double totalAmount = await getTotalExpenseAmount();
-      _totalExpenseAmount = totalAmount;
+      _totalExpenseAmount = await getTotalExpenseValue();
       notifyListeners();
     } catch (e) {
       notifyListeners();
     }
+  }
+
+  Future<void> addNewExpense(String expDesc, double totalAmount,
+      DateTime addedDate, int userId) async {
+    _newExpense.add(ShopExpense(
+        expenseDescription: expDesc,
+        totalAmount: totalAmount,
+        addedDate: addedDate,
+        userId: userId));
+
+    _totalNewExpense += totalAmount;
+
+    notifyListeners();
+  }
+
+  List<ShopExpense> _newExpense = [];
+  List<ShopExpense> _mainExpense = [];
+  double _totalMainExpense = 0.0;
+  double _totalNewExpense = 0.0;
+  List<ShopExpense> get getNewExpense => _newExpense;
+  List<ShopExpense> get getMainExpense => _mainExpense;
+  double get getTotalMainExpense => _totalMainExpense;
+  double get getTotalNewExpense => _totalNewExpense;
+
+  Future<void> confirmExpense() async {
+    for (int i = 0; i < _newExpense.length; i++)
+      _mainExpense.add(_newExpense[i]);
+    _totalMainExpense += _totalNewExpense;
+    for (int i = 0; i < _newExpense.length; i++) _expense.add(_newExpense[i]);
+    _newExpense.clear();
+    print(_newExpense.length);
+    _totalExpenseAmount += _totalMainExpense;
+    _totalNewExpense = 0.0;
+    notifyListeners();
+  }
+
+  Future<void> clearExpenses() async {
+    _expense.clear();
+    notifyListeners();
   }
 
   //Expense Category
@@ -335,6 +444,11 @@ class SalesModel extends ChangeNotifier {
     }
   }
 
+  Future<void> clearExpenseCategory() async {
+    _expenseCategory.clear();
+    notifyListeners();
+  }
+
   // Add New Sales
   List<ProductSales> _newSales = [];
   List<ProductSales> _mainSales = [];
@@ -345,8 +459,8 @@ class SalesModel extends ChangeNotifier {
   double get getTotalMainSales => _totalMainSales;
   double get getTotalNewSales => _totalNewSales;
 
-  void addNewSales(
-      int id, String productName, double totalAmount, DateTime addedDate) {
+  Future<void> addNewSales(int id, String productName, double totalAmount,
+      DateTime addedDate) async {
     _newSales.add(ProductSales(
         id: id,
         productName: productName,
@@ -358,10 +472,13 @@ class SalesModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void confirmSales() {
+  Future<void> confirmSales() async {
     for (int i = 0; i < _newSales.length; i++) _mainSales.add(_newSales[i]);
     _totalMainSales += _totalNewSales;
+
+    for (int i = 0; i < _newSales.length; i++) _sales.add(_newSales[i]);
     _newSales.clear();
+    _totalAmount += _totalMainSales;
     _totalNewSales = 0.0;
     notifyListeners();
   }
@@ -370,7 +487,7 @@ class SalesModel extends ChangeNotifier {
 
   //remove Product Daily Sales
 
-  void deleteItem(int index) {
+  Future<void> deleteItem(int index) async {
     _newSales.length == 1
         ? _totalMainSales = 0.0
         : _totalMainSales -= _newSales[index].totalAmount;
@@ -461,6 +578,11 @@ class SalesModel extends ChangeNotifier {
     }
   }
 
+  Future<void> clearSalesCategory() async {
+    _items.clear();
+    notifyListeners();
+  }
+
   // User and Shop
 
   int _shopId = 0;
@@ -469,17 +591,17 @@ class SalesModel extends ChangeNotifier {
   int get getShopId => _shopId;
   int get getUserId => _userId;
 
-  void addUserId(int userId) {
+  Future<void> addUserId(int userId) async {
     _userId = userId;
     notifyListeners();
   }
 
-  void addShopId(int shopId) {
+  Future<void> addShopId(int shopId) async {
     _shopId = shopId;
     notifyListeners();
   }
 
-  void clearUserData() {
+  Future<void> clearUserData() async {
     _shopId = 0;
     _userId = 0;
     notifyListeners();
@@ -544,24 +666,51 @@ class SalesModel extends ChangeNotifier {
 
   // BackUp button
   Future<String> backupSalesData(
-      String productName, String totalAmount, String addedDate) async {
+      String productName, double totalAmount, String addedDate) async {
     // Expected format: 'Y-m-d H:i:s'
-    var url = Uri.parse("http://${ip}/CashBookApp/insertDailySales.php");
+    var url = Uri.parse("http://${ip}/CashBookApp/insertDailySalesDB.php");
+
+    final response = await http.post(url, body: {
+      'product_name': productName,
+      'total_price': totalAmount.toString(),
+      'added_date': addedDate,
+    });
+
+    if (response.statusCode == 200) {
+      var dataReceived = json.decode(response.body);
+
+      if (dataReceived['status'] == 'Success') {
+        _mainSales.clear();
+        notifyListeners();
+        return dataReceived['status'];
+      } else {
+        throw Exception('Server error: ${dataReceived['message']}');
+      }
+    } else {
+      throw Exception('HTTP error: ${response.statusCode}');
+    }
+  }
+
+  Future<String> backupExpenseData(
+      String expDesc, double totalAmount, String addedDate, int userId) async {
+    // Expected format: 'Y-m-d H:i:s'
+    var url = Uri.parse("http://${ip}/CashBookApp/insertDailyExpenseDB.php");
 
     try {
       final response = await http.post(url, body: {
-        'product_name': productName,
-        'total-amount': totalAmount,
+        'expense_desc': expDesc,
+        'total_price': totalAmount.toString(),
         'added_date': addedDate,
+        'user_id': userId.toString(),
       });
 
       if (response.statusCode == 200) {
         var dataReceived = json.decode(response.body);
 
         if (dataReceived['status'] == 'Success') {
-          _mainSales.clear();
+          _mainExpense.clear();
           notifyListeners();
-          return dataReceived;
+          return dataReceived['status'];
         } else {
           throw Exception('Server error: ${dataReceived['message']}');
         }
@@ -572,5 +721,24 @@ class SalesModel extends ChangeNotifier {
       // Capture the specific error message and rethrow it
       throw Exception('Error in Connection: ${error.toString()}');
     }
+  }
+
+  Future<void> clearAll() async {
+    _sales.clear();
+    _mainSales.clear();
+    _expenseCategory.clear();
+    _expense.clear();
+    _items.clear();
+    _totalAmount = 0.0;
+    _totalExpenseAmount = 0.0;
+    _totalNewExpense = 0.0;
+    _totalMainSales = 0.0;
+    _totalNewSales = 0.0;
+    notifyListeners();
+  }
+
+  Future<void> clearSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // This clears all the stored preferences
   }
 }

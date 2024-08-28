@@ -1,19 +1,38 @@
 import 'package:cash_book_app4/list_grids/expense_list_grid.dart';
+import 'package:cash_book_app4/list_grids/expense_report_grid.dart';
 import 'package:cash_book_app4/list_grids/sales_list_grid.dart';
+import 'package:cash_book_app4/model/sales_model.dart';
 import 'package:cash_book_app4/utils/dimentions.dart';
 import 'package:cash_book_app4/utils/dropdownmenu_widget.dart';
 import 'package:cash_book_app4/widgets/big_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ExpenseReport extends StatefulWidget {
   const ExpenseReport({super.key});
 
   @override
-  State<ExpenseReport> createState() => _ExpenseReportState();
+  State<ExpenseReport> createState() => ExpenseReportState();
 }
 
-class _ExpenseReportState extends State<ExpenseReport> {
+class ExpenseReportState extends State<ExpenseReport> {
+  final GlobalKey<DropdownMenuWidgetState> dropDownKey =
+      GlobalKey<DropdownMenuWidgetState>();
+
+  String? selectedValue;
+  @override
+  void initState() {
+    selectedValue = dropDownKey.currentState?.getSelectedDate();
+    super.initState();
+  }
+
+  void _updateSelectedValue(String value) {
+    setState(() {
+      selectedValue = value; // Update the selected value
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -26,11 +45,16 @@ class _ExpenseReportState extends State<ExpenseReport> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              DropdownMenuWidget(),
-              BigText(text: "Date"),
+              BigText(text: "Expense Report"),
+              DropdownMenuWidget(
+                key: dropDownKey,
+                onValueChanged: _updateSelectedValue,
+              ),
               Container(
                 //color: Colors.red,
-                child: ExpenseListGrid(),
+                child: ExpenseReportGrid(
+                  selectedValue: selectedValue,
+                ),
               ),
             ],
           ),
